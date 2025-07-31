@@ -1,8 +1,9 @@
 'use client';
 import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 import { useMutation } from "convex/react";
 
-export default function ContextMenu({ taskId, onClose, position }: { taskId: string | null ; onClose: () => void; position: { x: number; y: number } }) {
+export default function ContextMenu({ taskId, onClose, position }: { taskId: Id<'tasks'> | null ; onClose: () => void; position: { x: number; y: number } }) {
   const deleteTask = useMutation(api.tasksFunctions.deleteTask);
 
   const handleDeleteTask = (e: React.MouseEvent) => {
@@ -43,7 +44,7 @@ export default function ContextMenu({ taskId, onClose, position }: { taskId: str
         <li className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded-md text-sm whitespace-nowrap">Метки</li>
         <li className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded-md text-sm whitespace-nowrap">Дублировать</li>
         <li className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded-md text-sm whitespace-nowrap">Копировать ссылку</li>
-        <li className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded-md text-sm whitespace-nowrap" onClick={() => console.log('aboba')}>Преобразовать в зам...</li>
+        <li className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded-md text-sm whitespace-nowrap">Преобразовать в зам...</li>
         <li className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded-md text-sm whitespace-nowrap" onClick={(e) => handleDeleteTask(e)}>Удалить</li>
       </ul>
     </div>

@@ -3,6 +3,25 @@ import { mutation, query } from "./_generated/server";
 // import { api } from "./_generated/api";
 import { getAuthUserId } from "@convex-dev/auth/server";
 
+export const getTasks = query({
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (!userId) {
+      return;
+    }
+
+    const tasksList = await ctx.db
+      .query("tasks")
+      .withIndex('by_completed')
+      .filter((q) => q.eq(q.field("userId"), userId))
+      .order('asc')
+      .collect();
+
+    return tasksList ? tasksList : [];
+  },
+});
+
 export const addTask = mutation({
   args: {
     body: v.string(),
@@ -11,108 +30,49 @@ export const addTask = mutation({
     const userId = await getAuthUserId(ctx);
 
     if (!userId) {
-      return;
+      throw new Error("User not authenticated");
     }
 
-    const newTask = {
-      _id: crypto.randomUUID(),
+    const newTaskId = await ctx.db.insert("tasks", {
+      userId: userId,
       body: args.body,
       completed: false,
-    }
-    
-    const tasksList = await ctx.db.query('todos').filter(q => q.eq(q.field('userId'), userId)).first();
+    });
 
-    if(!tasksList) {
-      const taskList = {
-        userId,
-        tasks: [newTask]
-      }
-      await ctx.db.insert('todos', taskList);
-    } else {
-      const newTaskList = [...tasksList.tasks, newTask]
-      await ctx.db.patch(tasksList._id, {tasks: newTaskList})
-    }
-    
-    return 'success'
-  }
-})
-
-export const getTasks = query({
-  handler: async (ctx) => {
-    const userId = await getAuthUserId(ctx);
-    
-    if (!userId) {
-      return;
-    }
-
-    const tasksList = await ctx.db.query('todos').filter(q => q.eq(q.field('userId'), userId)).first();
-
-    return tasksList ? tasksList.tasks : [];
-  }
-})
-
-// export const updateTask = mutation({
-//   args:
-// })
+    console.log(`Task with _id ${newTaskId} created`);
+  },
+});
 
 export const deleteTask = mutation({
-  args: { taskId: v.string() },
+  args: {
+    taskId: v.id("tasks"),
+  },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
     if (!userId) {
-      throw new Error('User not authenticated');
+      throw new Error("User not authenticated");
     }
 
-    const tasksList = await ctx.db
-      .query('todos')
-      .filter((q) => q.eq(q.field('userId'), userId))
-      .first();
-
-    if (!tasksList) {
-      throw new Error(`Tasks list for user ${userId} not found`);
-    }
-
-    const updatedTasks = tasksList.tasks.filter((task) => task._id !== args.taskId);
-    await ctx.db.patch(tasksList._id, { tasks: updatedTasks });
-    console.log(`Task with _id ${args.taskId} deleted`);
+    await ctx.db.delete(args.taskId);
   },
 });
 
 export const updateTask = mutation({
   args: {
-    taskId: v.string(),
-    body: v.optional(v.string()),
-    completed: v.optional(v.boolean()),
+    taskId: v.id("tasks"),
+    patch: v.object({
+      body: v.optional(v.string()),
+      completed: v.optional(v.boolean()),
+    }),
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
     if (!userId) {
-      throw new Error('User not authenticated');
+      throw new Error("User not authenticated");
     }
 
-    console.log('Принято:', args.completed)
+    console.log("Принято:", args.patch.completed);
 
-    const tasksList = await ctx.db
-      .query('todos')
-      .filter((q) => q.eq(q.field('userId'), userId))
-      .first();
-
-    if (!tasksList) {
-      throw new Error(`Tasks list for user ${userId} not found`);
-    }
-
-    const updatedTasks = tasksList.tasks.map((task) => {
-      if (task._id === args.taskId) {
-        return {
-          ...task,
-          body: args.body || task.body,
-          completed: args.completed !== undefined ? args.completed : task.completed, // здесь нужна проверка, т.к. false будет проигнорирован
-        };
-      }
-      return task;
-    });
-
-    await ctx.db.patch(tasksList._id, { tasks: updatedTasks });
-    console.log(`Task with _id ${args.taskId} updated`);
-  }
-})
+    await ctx.db.patch(args.taskId, args.patch);
+  },
+});
