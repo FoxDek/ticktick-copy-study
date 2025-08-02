@@ -1,7 +1,11 @@
 'use client';
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { cva } from "class-variance-authority";
 import { useMutation } from "convex/react";
+
+const contextMenu = cva("context-menu absolute bg-white shadow-lg rounded-md p-2 z-10 w-[200px]")
+const contextMenuItem = cva('cursor-pointer hover:bg-gray-100 px-2 py-1 rounded-md text-sm whitespace-nowrap')
 
 export default function ContextMenu({ taskId, onClose, position }: { taskId: Id<'tasks'> | null ; onClose: () => void; position: { x: number; y: number } }) {
   const deleteTask = useMutation(api.tasksFunctions.deleteTask);
@@ -33,19 +37,19 @@ export default function ContextMenu({ taskId, onClose, position }: { taskId: Id<
 
   return (
     <div
-      className="context-menu absolute bg-white shadow-lg rounded-md p-2 z-10 w-[200px]"
+      className={contextMenu()}
       style={{ top: position.y, left: adjustedX }}
     >
       <ul>
-        <li className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded-md text-sm whitespace-nowrap">Создать родительскую...</li>
-        <li className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded-md text-sm whitespace-nowrap">Закрепить</li>
-        <li className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded-md text-sm whitespace-nowrap">Не буду делать</li>
-        <li className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded-md text-sm whitespace-nowrap">Переместить в...</li>
-        <li className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded-md text-sm whitespace-nowrap">Метки</li>
-        <li className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded-md text-sm whitespace-nowrap">Дублировать</li>
-        <li className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded-md text-sm whitespace-nowrap">Копировать ссылку</li>
-        <li className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded-md text-sm whitespace-nowrap">Преобразовать в зам...</li>
-        <li className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded-md text-sm whitespace-nowrap" onClick={(e) => handleDeleteTask(e)}>Удалить</li>
+        <li className={contextMenuItem()}>Создать родительскую...</li>
+        <li className={contextMenuItem()}>Закрепить</li>
+        <li className={contextMenuItem()}>Не буду делать</li>
+        <li className={contextMenuItem()}>Переместить в...</li>
+        <li className={contextMenuItem()}>Метки</li>
+        <li className={contextMenuItem()}>Дублировать</li>
+        <li className={contextMenuItem()}>Копировать ссылку</li>
+        <li className={contextMenuItem()}>Преобразовать в зам...</li>
+        <li className={contextMenuItem()} onClick={(e) => handleDeleteTask(e)}>Удалить</li>
       </ul>
     </div>
   );

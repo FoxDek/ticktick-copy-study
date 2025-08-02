@@ -5,7 +5,7 @@ import ProjectsListMenu from "@/components/ProjectsListMenu";
 import { useSidebar } from "./SidebarProvider";
 
 export default function SiteContainer({ children }: { children: React.ReactNode } ) {
-  const {sidebarIsOpen, setSidebarIsOpen} = useSidebar();
+  const {sidebarIsOpen} = useSidebar();
 
   return (
     <section className="siteContainer min-h-screen flex">
