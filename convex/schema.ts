@@ -28,5 +28,12 @@ export default defineSchema({
     completed: v.boolean(),
     dueDate: v.optional(v.string()),
     groupId: v.optional(v.id("taskGroups")),
+    details: v.optional(v.string()),
+    priority: v.union(v.literal('common'), v.literal('low'), v.literal('medium'), v.literal('high')),
+    subtasks: v.optional(v.array(v.object({
+      _id: v.string(),
+      body: v.string(),
+      completed: v.boolean()
+    })))
   }).index('by_completed', ['completed']),
 });

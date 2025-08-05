@@ -2,14 +2,17 @@
 
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { useMutation, useQuery } from "convex/react";
+import { useQuery } from "convex/react";
 import { useEffect, useState } from "react";
 import ContextMenu from "./ContextMenu";
 import TaskCard from "./TaskCard";
+import { useTaskActions } from "@/app/hoocs/useTaskActions";
 
 
-export default function TasksList( { activeTaskId, setActiveTaskId }: { activeTaskId: Id<'tasks'> | null; setActiveTaskId: (taskId: Id<'tasks'> | null) => void }) {
+
+export default function TasksList() {
   const data = useQuery(api.tasksFunctions.getTasks);
+  const {handleTaskCheck} = useTaskActions();
 
   const [contextMenu, setContextMenu] = useState<{
     isOpen: boolean;
@@ -17,19 +20,12 @@ export default function TasksList( { activeTaskId, setActiveTaskId }: { activeTa
     position: { x: number; y: number };
   }>({ isOpen: false, taskId: null, position: { x: 0, y: 0 } });
 
-  const updateTask = useMutation(api.tasksFunctions.updateTask);
-
-  const handleTaskCheck = (taskId: Id<"tasks">, completed: boolean) => {
-    console.log('handleTaskCheck called, taskId:', taskId, 'completed:', completed);
-    updateTask({ taskId, patch: {completed} });
-  };
-
   const handleOpenContextMenu = (event: React.MouseEvent, taskId: Id<'tasks'>) => {
     event.preventDefault();
     const { pageX, pageY } = event;
     setContextMenu({ isOpen: true, taskId, position: { x: pageX, y: pageY } });
   };
-
+  
   const handleCloseContextMenu = () => {
     setContextMenu({ isOpen: false, taskId: null, position: { x: 0, y: 0 } });
   };
@@ -45,7 +41,7 @@ export default function TasksList( { activeTaskId, setActiveTaskId }: { activeTa
 }, [contextMenu.isOpen]);
 
   return (
-    <>
+    <div className="pl-6 pr-2">
       <ul>
         {data
           ? data.map((task) => (
@@ -56,8 +52,6 @@ export default function TasksList( { activeTaskId, setActiveTaskId }: { activeTa
               hasMultipleTasks={data.length > 1}
               handleTaskCheck={handleTaskCheck}
               handleOpenContextMenu={handleOpenContextMenu}
-              isActive={task._id === activeTaskId}
-              setActiveTaskId={setActiveTaskId}
             />))
           : "Loading..."}
       </ul>
@@ -68,6 +62,6 @@ export default function TasksList( { activeTaskId, setActiveTaskId }: { activeTa
           position={contextMenu.position}
         />
       )}
-    </>
+    </div>
   );
 }

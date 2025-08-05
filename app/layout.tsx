@@ -5,6 +5,7 @@ import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
 import ConvexClientProvider from "@/components/ConvexClientProvider";
 import SiteContainer from '../components/SiteContainer';
 import { SidebarProvider } from "@/components/SidebarProvider";
+import { ActiveTaskProvider } from "@/components/ActiveTaskProvider";
 // import  from "@/public/";
 
 const geistSans = Geist({
@@ -38,7 +39,9 @@ export default function RootLayout({
         >
           <ConvexClientProvider>
             <SidebarProvider>
-              <SiteContainer>{children}</SiteContainer>
+              <ActiveTaskProvider>
+                <SiteContainer>{children}</SiteContainer>
+              </ActiveTaskProvider>
             </SidebarProvider>
           </ConvexClientProvider>
         </body>

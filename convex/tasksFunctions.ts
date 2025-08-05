@@ -47,6 +47,7 @@ export const addTask = mutation({
       userId: userId,
       body: args.body,
       completed: false,
+      priority: 'common',
     });
 
     console.log(`Task with _id ${newTaskId} created`);
@@ -73,6 +74,11 @@ export const updateTask = mutation({
     patch: v.object({
       body: v.optional(v.string()),
       completed: v.optional(v.boolean()),
+      dueDate: v.optional(v.string()),
+      groupId: v.optional(v.id("taskGroups")),
+      priority: v.optional(v.union(v.literal("common"), v.literal("low"), v.literal("medium"), v.literal("high"))),
+      // subtasks: v.optional(v.array(v.object({ body: v.string(), completed: v.boolean() }))),
+      details: v.optional(v.string()),
     }),
   },
   handler: async (ctx, args) => {

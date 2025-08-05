@@ -1,12 +1,17 @@
+'use client';
+
 import { cva } from "class-variance-authority"
 import EmptyCheckmarkIcon from "@/public/fillcheck.svg";
 import CheckmarkIcon from "@/public/checkmark-icon.svg";
 import MoreIcon from "@/public/more-icon.svg";
+import ChecklistMarkIcon from "@/public/checklist-mark-icon.svg";
 import { Id } from "@/convex/_generated/dataModel";
+import { priorityColorCheckmark } from '../app/utils/priorityColors';
+import { useActiveTask } from "./ActiveTaskProvider";
 
-const checkmarkContainer = cva("flex items-center justify-center w-4 group cursor-pointer")
+const checkmarkContainer = cva("flex items-center justify-center h-4 group cursor-pointer")
 const checkCard = cva('flex items-center gap-2 group')
-const checkmarkIcon = cva('w-full h-full fill-icons')
+const checkmarkIcon = cva('w-full h-full fill-icons duration-100 ease-in-out')
 const checkCardBody = cva('h-full w-full py-2 transition-all duration-100 ease-in-out border-b border-transparent')
 const checkCardContent = cva("w-full flex flex-row items-center gap-2 group-hover:bg-gray-100 rounded-md text-sm px-4 duration-100 ease-in-out", {
   variants: {
@@ -20,17 +25,28 @@ const checkCardContent = cva("w-full flex flex-row items-center gap-2 group-hove
 interface TaskCardProps {
   task: {
     _id: Id<"tasks">;
+    _creationTime: number;
+    userId: Id<"users">;
     body: string;
     completed: boolean;
+    dueDate?: string;
+    groupId?: Id<"taskGroups">;
+    priority: 'common' | "low" | "medium" | "high";
+    subtasks?: {
+      _id: string;
+      body: string;
+      completed: boolean;
+    }[];
   };
   hasMultipleTasks?: boolean;
   handleTaskCheck: (taskId: Id<"tasks">, completed: boolean) => void;
   handleOpenContextMenu: (event: React.MouseEvent, taskId: Id<"tasks">) => void;
-  isActive?: boolean,
-  setActiveTaskId: (taskId: Id<"tasks"> | null) => void
 }
 
-export default function TaskCard({ task, hasMultipleTasks, handleTaskCheck, handleOpenContextMenu, isActive, setActiveTaskId }: TaskCardProps) {
+export default function TaskCard({ task, hasMultipleTasks, handleTaskCheck, handleOpenContextMenu }: TaskCardProps) {
+  const { activeTaskId, setActiveTaskId } = useActiveTask();
+  const isActive = task._id === activeTaskId;
+
   return (
     <li key={task._id} className={checkCard()} onClick={() => setActiveTaskId(task._id)}>
       <div className={checkCardContent( { active: isActive })}>
@@ -41,16 +57,20 @@ export default function TaskCard({ task, hasMultipleTasks, handleTaskCheck, hand
           {task.completed ? (
             <CheckmarkIcon
               className={checkmarkIcon({
-                className: "text-green-500 opacity-30 hover:opacity-100",
+                className: `fill-icons opacity-30 hover:opacity-100`,
               })}
             />
-          ) : (
-            <EmptyCheckmarkIcon
+          ) : task.subtasks && task.subtasks.length > 0 ? (
+            <ChecklistMarkIcon
               className={checkmarkIcon({
-                className: "text-transparent hover:text-gray-200",
+                className: `${priorityColorCheckmark[task.priority]} text-transparent`,
               })}
             />
-          )}
+          ) : <EmptyCheckmarkIcon
+              className={checkmarkIcon({
+                className: `${priorityColorCheckmark[task.priority]} text-transparent`,
+              })}
+            />}
         </span>
         <div
           className={checkCardBody({
