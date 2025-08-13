@@ -1,6 +1,5 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-// import { api } from "./_generated/api";
 import { getAuthUserId } from "@convex-dev/auth/server";
 
 export const getTasks = query({
@@ -48,6 +47,7 @@ export const addTask = mutation({
       body: args.body,
       completed: false,
       priority: 'common',
+      subtasksCount: 0,
     });
 
     console.log(`Task with _id ${newTaskId} created`);
@@ -77,8 +77,8 @@ export const updateTask = mutation({
       dueDate: v.optional(v.string()),
       groupId: v.optional(v.id("taskGroups")),
       priority: v.optional(v.union(v.literal("common"), v.literal("low"), v.literal("medium"), v.literal("high"))),
-      // subtasks: v.optional(v.array(v.object({ body: v.string(), completed: v.boolean() }))),
-      details: v.optional(v.string()),
+      description: v.optional(v.string()),
+      subtasksCount: v.optional(v.number()),
     }),
   },
   handler: async (ctx, args) => {
@@ -87,8 +87,9 @@ export const updateTask = mutation({
       throw new Error("User not authenticated");
     }
 
-    console.log("Принято:", args.patch.completed);
-
     await ctx.db.patch(args.taskId, args.patch);
   },
 });
+
+
+

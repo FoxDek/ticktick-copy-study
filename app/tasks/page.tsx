@@ -29,6 +29,7 @@ export default function Tasks() {
   const {activeTaskId} = useActiveTask();
   const addTask = useMutation(api.tasksFunctions.addTask);
   const activeTask = useQuery(api.tasksFunctions.getTask, activeTaskId ? { taskId: activeTaskId as Id<"tasks"> } : "skip");
+  const subtasks = useQuery(api.subtasksFunctions.getSubtasks, activeTaskId ? { taskId: activeTaskId as Id<"tasks"> } : "skip")
 
   const handleAddTask = () => {
     addTask({ body: inputValue });
@@ -46,13 +47,13 @@ export default function Tasks() {
           <h2 className={tasksTopTitle()}>Все</h2>
         </div>
         <div className="px-6"><input type="text" className={tasksInput()} placeholder="+ Добавить задачу" value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleAddTask()}/></div>
-        <TasksList/>
+        <TasksList />
       </section>
 
       {/* <div className="ТУТ БУДЕТ БЛОК ДЛЯ РЕСАЙЗА"></div>*/}
 
       <section className="w-full h-full flex flex-col max-w-[450px]">
-        {activeTaskId && <TaskFullView taskData={activeTask} />  }
+        {activeTaskId && <TaskFullView taskData={activeTask} subtasks={subtasks} />  }
       </section>
 
     </div>
