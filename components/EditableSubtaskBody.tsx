@@ -4,17 +4,29 @@ import { useSubtasksActions } from "@/app/hoocs/useSubtasksActions";
 import { Id } from "@/convex/_generated/dataModel";
 import { useEffect, useRef, useState } from "react";
 
+interface EditableSubtaskBodyProps {
+  subtaskId: Id<"subtasks">;
+  body: string;
+  completed: boolean;
+  listDescToggler: string;
+  handleAddSubtask: () => void;
+  autoEditId: boolean;
+  subtaskCount: number;
+  onFocusChange?: () => void;
+  handleBackspaceDelete: (subtaskId: Id<"subtasks">) => void;
+}
+
 export default function EditableSubtaskBody({
   subtaskId,
   body,
   completed,
-  listDescToggler
-}: {
-  subtaskId: Id<"subtasks">;
-  body: string;
-  completed: boolean;
-  listDescToggler: string
-}) {
+  listDescToggler,
+  handleAddSubtask,
+  autoEditId,
+  subtaskCount,
+  onFocusChange,
+  handleBackspaceDelete
+}: EditableSubtaskBodyProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [inputValue, setInputValue] = useState(body);
   const [debouncedValue, setDebouncedValue] = useState(body);
@@ -23,11 +35,16 @@ export default function EditableSubtaskBody({
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    if (autoEditId) {
+      setIsEditing(true);
+    }
+  }, [autoEditId]);
+
+  useEffect(() => {
     if (isEditing && inputRef.current) {
       inputRef.current.focus();
-      // inputRef.current.select(); // выделение текста
     }
-  }, [isEditing]);
+  }, [isEditing, subtaskId, onFocusChange]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -48,8 +65,19 @@ export default function EditableSubtaskBody({
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
+      e.preventDefault();
+      if (subtaskCount >= 5) {
+        setIsEditing(false);
+        return;
+      };
+
       setIsEditing(false);
       handleSubtaskBodyChange(subtaskId, inputValue);
+      handleAddSubtask();
+    } else if (e.key === 'Backspace' && inputValue === '') {
+      e.preventDefault();
+      setIsEditing(false);
+      handleBackspaceDelete(subtaskId);
     }
   };
 
@@ -61,7 +89,10 @@ export default function EditableSubtaskBody({
   if (!isEditing) {
     return (
       <div
-        onClick={() => setIsEditing(true)}
+        onClick={() => {
+          setIsEditing(true);
+          onFocusChange?.();
+        }}
         className={`text-sm font-normal inline-block h-full w-full rounded-none border-none focus:outline-none cursor-text leading-[19px] ${completed && listDescToggler === "list" ? "opacity-30 group-hover:opacity-40" : "opacity-100"}`}
       >
         {inputValue || "\u00A0"}

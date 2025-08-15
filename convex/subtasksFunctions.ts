@@ -19,9 +19,11 @@ export const addSubtask = mutation({
     body: v.string(),
   },
   handler: async(ctx, args) => {
-    const newSubtask = await ctx.db.insert("subtasks", {taskId: args.taskId, body: args.body, completed: false});
+    const newSubtaskId = await ctx.db.insert("subtasks", {taskId: args.taskId, body: args.body, completed: false});
     
-    console.log('Subtask with id:', newSubtask, 'added successfully.');
+    console.log('Subtask with id:', newSubtaskId, 'added successfully.');
+
+    return newSubtaskId;
   }
 })
 

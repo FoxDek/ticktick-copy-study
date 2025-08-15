@@ -4,9 +4,17 @@ import { useMutation } from "convex/react";
 import { useCallback } from "react";
 
 export function useSubtasksActions() {
+  const addSubtask = useMutation(api.subtasksFunctions.addSubtask)
   const updateSubtask = useMutation(api.subtasksFunctions.updateSubtask)
   const deleteSubtask = useMutation(api.subtasksFunctions.deleteSubtask)
   const updateTask = useMutation(api.tasksFunctions.updateTask)
+
+  const handleSubtaskCreate = useCallback((taskId: Id<"tasks">, subtaskCount: number) => {
+    console.log('handleSubtaskAdd called, taskId:', taskId);
+    const newSubtaskId = addSubtask({ taskId, body: '' });
+    updateTask({ taskId, patch: {subtasksCount: subtaskCount + 1} });
+    return newSubtaskId;
+  }, [addSubtask, updateTask]);
 
   const handleSubtaskBodyChange = useCallback((subtaskId: Id<"subtasks">, body: string ) => {
     console.log('handleSubtaskBodyChange called, subtaskId:', subtaskId, 'body:', body);
@@ -25,6 +33,7 @@ export function useSubtasksActions() {
   }, [deleteSubtask, updateTask]);
 
   return {
+    handleSubtaskCreate,
     handleSubtaskBodyChange,
     handleSubtaskCheck,
     handleSubtaskDelete
