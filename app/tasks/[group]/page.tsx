@@ -12,6 +12,7 @@ import TasksList from "@/components/TasksList";
 import { Id } from "@/convex/_generated/dataModel";
 import TaskFullView from "@/components/TaskFullView";
 import { useActiveTask } from "@/components/ActiveTaskProvider";
+import { useParams } from "next/navigation";
 
 const tasks = cva("tasks flex flex-col gap-6 border-r border-gray-200 w-full h-full")
 const tasksTop = cva("tasksTop flex gap-2 items-center px-6 pt-6")
@@ -36,6 +37,8 @@ export default function Tasks() {
     setInputValue("");
   };
 
+  const activeGroup = useParams<{ group: string }>().group;
+
   return (
     <div className="flex h-full">
 
@@ -47,7 +50,7 @@ export default function Tasks() {
           <h2 className={tasksTopTitle()}>Все</h2>
         </div>
         <div className="px-6"><input type="text" className={tasksInput()} placeholder="+ Добавить задачу" value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleAddTask()}/></div>
-        <TasksList />
+        <TasksList activeGroup={activeGroup}/>
       </section>
 
       {/* <div className="ТУТ БУДЕТ БЛОК ДЛЯ РЕСАЙЗА"></div>*/}

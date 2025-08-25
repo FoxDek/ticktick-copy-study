@@ -12,7 +12,7 @@ import EditableCheckCardBody from "./EditableCheckCardBody";
 
 const checkmarkContainer = cva("flex items-center justify-center h-4 group cursor-pointer")
 const checkCard = cva('flex items-center gap-2 group')
-const checkmarkIcon = cva('w-full h-full fill-icons duration-100 ease-in-out')
+const checkmarkIcon = cva('w-auto h-full fill-icons duration-100 ease-in-out')
 // const checkCardBody = cva('h-full w-full py-2 transition-all duration-100 ease-in-out border-b border-transparent')
 const checkCardContent = cva("w-full flex flex-row items-center gap-2 group-hover:bg-gray-100 rounded-md text-sm px-4 duration-100 ease-in-out", {
   variants: {

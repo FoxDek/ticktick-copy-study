@@ -3,19 +3,33 @@ import { mutation, query } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
 
 export const getTasks = query({
-  handler: async (ctx) => {
+  args: {
+    groupId: v.union(v.string(), v.id("taskGroups")),
+  },
+  handler: async (ctx, { groupId }) => {
     const userId = await getAuthUserId(ctx);
 
     if (!userId) {
       return;
     }
 
-    const tasksList = await ctx.db
-      .query("tasks")
-      .withIndex('by_completed')
-      .filter((q) => q.eq(q.field("userId"), userId))
-      .order('asc')
-      .collect();
+    let tasksQuery = ctx.db.query('tasks').withIndex('by_completed');
+
+    tasksQuery = tasksQuery.filter((q) => q.eq(q.field("userId"), userId));
+
+    if (groupId == 'completed') {
+      tasksQuery = tasksQuery.filter((q) => q.eq(q.field("completed"), true));
+    } else if (groupId === 'today') {
+      tasksQuery = tasksQuery.filter((q) => q.eq(q.field("dueDate"), new Date().toISOString()));
+    } else if (groupId === 'inbox') {
+      tasksQuery = tasksQuery.filter((q) => q.eq(q.field("groupId"), undefined));
+    } else if (groupId && groupId !== 'all') {
+      tasksQuery = tasksQuery.filter((q) => q.eq(q.field("groupId"), groupId));
+    }
+
+    const orderedQuery = tasksQuery.order('asc');
+
+    const tasksList = await orderedQuery.collect();
 
     return tasksList ? tasksList : [];
   },

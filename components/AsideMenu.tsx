@@ -38,7 +38,7 @@ export default function AsideMenu() {
             className="object-cover"
           />
         </a>
-        <Link href={"/tasks"} className={iconContainer()} onClick={() => setActiveTab('tasks')}>
+        <Link href={"/tasks/all"} className={iconContainer()} onClick={() => setActiveTab('tasks')}>
           <CheckmarkIcon className={iconSvg({ active: activeTab === 'tasks' })} />
         </Link>
         <Link href={"/calendar"} className={iconContainer()} onClick={() => setActiveTab('calendar')}>

@@ -8,18 +8,12 @@ import { authTables } from "@convex-dev/auth/server";
 export default defineSchema({
   ...authTables,
 
-  // todos: defineTable({
-  //   tasks: v.array(v.object({
-  //     _id: v.string(),
-  //     body: v.string(),
-  //     completed: v.boolean()
-  //   })),
-  //   userId: v.id("users"),
-  // }),
   taskGroups: defineTable({
     name: v.string(),
     userId: v.id("users"),
     color: v.string(),
+    // icon: v.union(...iconNames.map(n => v.literal(n))),
+    icon: v.union(v.literal('all'), v.literal('today'), v.literal('inbox'), v.literal('plus'), v.literal('checkmarkNoBg'), v.literal('trash'), v.literal('newList')),
   }),
 
   tasks: defineTable({
@@ -31,7 +25,9 @@ export default defineSchema({
     description: v.optional(v.string()),
     subtasksCount: v.number(),
     priority: v.union(v.literal('common'), v.literal('low'), v.literal('medium'), v.literal('high')),
-  }).index('by_completed', ['completed']),
+  })
+    .index('by_completed', ['completed'])
+    .index('by_groupId', ['groupId']),
 
   subtasks: defineTable({
     taskId: v.id("tasks"),

@@ -14,6 +14,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as auth from "../auth.js";
+import type * as groupsFunctions from "../groupsFunctions.js";
 import type * as http from "../http.js";
 import type * as subtasksFunctions from "../subtasksFunctions.js";
 import type * as tasksFunctions from "../tasksFunctions.js";
@@ -28,6 +29,7 @@ import type * as tasksFunctions from "../tasksFunctions.js";
  */
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
+  groupsFunctions: typeof groupsFunctions;
   http: typeof http;
   subtasksFunctions: typeof subtasksFunctions;
   tasksFunctions: typeof tasksFunctions;

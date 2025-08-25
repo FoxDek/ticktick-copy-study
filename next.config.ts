@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/',
-        destination: '/tasks',
+        destination: '/tasks/all',
         permanent: true, // true для 301 (постоянный), false для 302 (временный)
       },
     ];
