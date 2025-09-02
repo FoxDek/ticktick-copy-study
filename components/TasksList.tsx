@@ -59,6 +59,7 @@ export default function TasksList({ activeGroup }: { activeGroup: string }) {
                 hasMultipleTasks={data.length > 1}
                 handleTaskCheck={handleTaskCheck}
                 handleOpenContextMenu={handleOpenContextMenu}
+                activeGroup={activeGroup}
               />
             ))
           ) : (

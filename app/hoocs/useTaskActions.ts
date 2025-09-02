@@ -6,6 +6,7 @@ import { useCallback } from "react";
 type Priority = 'common' | 'low' | 'medium' | 'high';
 
 export function useTaskActions() {
+  const addTask = useMutation(api.tasksFunctions.addTask);
   const updateTask = useMutation(api.tasksFunctions.updateTask);
 
   const handleTaskCheck = useCallback((taskId: Id<"tasks">, completed: boolean) => {
@@ -28,10 +29,20 @@ export function useTaskActions() {
     updateTask({ taskId, patch: {description} });
   }, [updateTask]);
 
+  const handleGroupChange = useCallback((taskId: Id<"tasks">, groupId: Id<"taskGroups"> | null) => {
+    console.log('handleGroupChange called, taskId:', taskId, 'groupId:', groupId);
+    updateTask({ taskId, patch: {groupId} });
+  }, [updateTask]);
+
   const handleSubtasksCountChange = useCallback((taskId: Id<"tasks">, subtasksCount: number ) => {
     console.log('handleSubtasksCountChange called, taskId:', taskId, 'subtasksCount:', subtasksCount);
     updateTask({ taskId, patch: {subtasksCount} });
   }, [updateTask]);
+
+  const handleDuplicateTask = useCallback(({body, groupId}: {body: string, groupId?: Id<"taskGroups"> | null}) => {
+    console.log('handleDuplicateTask called, body:', body, 'groupId:', groupId);
+    addTask({ body, groupId });
+  }, [addTask])
 
 
   return {
@@ -39,6 +50,8 @@ export function useTaskActions() {
     handleTaskChangePriority,
     handleBodyChange,
     handleDescriptionChange,
+    handleGroupChange,
     handleSubtasksCountChange,
+    handleDuplicateTask
   }
 }

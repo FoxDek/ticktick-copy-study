@@ -12,6 +12,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import GroupsContextMenu from "./menu-components/GroupsContextMenu";
 import BasicGroups from './BasicGroups';
 import BasicFooterGroups from "./BasicFooterGroups";
+import { useParams } from "next/navigation";
 
 const projectsListMenu = cva(
   "projectsListMenu w-[320px] bg-gradient-to-b from-[#e0e2f8] to-[#f4ecf9] p-3 select-none",
@@ -35,7 +36,8 @@ const groupHint = cva(
 export default function ProjectsListMenu(sidebarIsOpen: {
   sidebarIsOpen: boolean;
 }) {
-  const [activeGroup, setActiveGroup] = useState("all");
+  const params = useParams<{ group: string }>();
+  const [activeGroup, setActiveGroup] = useState(params.group ?? "all");
   const [openCustomList, setOpenCustomList] = useState(true);
   const [openFilteredList, setOpenFilteredList] = useState(true);
   const [openTaggedList, setOpenTaggedList] = useState(true);
@@ -47,7 +49,11 @@ export default function ProjectsListMenu(sidebarIsOpen: {
   }>({ isOpen: false, groupId: null, position: { x: 0, y: 0 } });
   const [editingGroupId, setEditingGroupId] = useState<Id<"taskGroups"> | null>(null);
 
-  
+  useEffect(() => {
+    if (params.group) {
+      setActiveGroup(params.group);
+    }
+  }, [params.group]);
 
   const userFilters = [];
   const userTags = [];
@@ -74,7 +80,7 @@ export default function ProjectsListMenu(sidebarIsOpen: {
         if (
           contextMenu.isOpen &&
           e.target instanceof Element &&
-          !e.target.closest(".context-menu")
+          !e.target.closest(".contextMenu")
         ) {
           handleCloseContextMenu();
         }

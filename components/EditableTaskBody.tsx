@@ -6,7 +6,7 @@ import { cva } from "class-variance-authority";
 import { useEffect, useRef, useState } from "react";
 
 const checkCardBody = cva(
-  "text-xl font-bold h-full w-full rounded-none border-none focus:outline-none",
+  "text-xl font-bold w-full rounded-none border-none focus:outline-none h-[28px]",
 );
 
 export default function EditableTaskBody({

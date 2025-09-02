@@ -20,7 +20,7 @@ export const getTasks = query({
     if (groupId == 'completed') {
       tasksQuery = tasksQuery.filter((q) => q.eq(q.field("completed"), true));
     } else if (groupId === 'today') {
-      tasksQuery = tasksQuery.filter((q) => q.eq(q.field("dueDate"), new Date().toISOString()));
+      tasksQuery = tasksQuery.filter((q) => q.eq(q.field("dueDate"), new Date().toISOString().split('T')[0]));
     } else if (groupId === 'inbox') {
       tasksQuery = tasksQuery.filter((q) => q.eq(q.field("groupId"), undefined));
     } else if (groupId && groupId !== 'all') {
@@ -48,6 +48,8 @@ export const getTask = query({
 export const addTask = mutation({
   args: {
     body: v.string(),
+    groupId: v.optional(v.union(v.id("taskGroups"), v.null())),
+    dueDate: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
@@ -61,6 +63,8 @@ export const addTask = mutation({
       body: args.body,
       completed: false,
       priority: 'common',
+      groupId: args.groupId,
+      dueDate: args.dueDate,
       subtasksCount: 0,
     });
 
@@ -89,7 +93,7 @@ export const updateTask = mutation({
       body: v.optional(v.string()),
       completed: v.optional(v.boolean()),
       dueDate: v.optional(v.string()),
-      groupId: v.optional(v.id("taskGroups")),
+      groupId: v.optional(v.union(v.id("taskGroups"), v.null())),
       priority: v.optional(v.union(v.literal("common"), v.literal("low"), v.literal("medium"), v.literal("high"))),
       description: v.optional(v.string()),
       subtasksCount: v.optional(v.number()),
@@ -101,7 +105,13 @@ export const updateTask = mutation({
       throw new Error("User not authenticated");
     }
 
-    await ctx.db.patch(args.taskId, args.patch);
+    const patch = { ...args.patch };
+
+    if (patch.groupId === null) {
+      patch.groupId = undefined;
+    }
+    
+    await ctx.db.patch(args.taskId, patch);
   },
 });
 

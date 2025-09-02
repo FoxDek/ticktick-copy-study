@@ -35,6 +35,10 @@ export function useGroupsActions() {
     updateCustomGroup({groupId, patch: { name, color, icon }})
   }, [updateCustomGroup]);
 
+  const handleUpdateGroupName = useCallback(({ groupId, name }: { groupId: Id<"taskGroups">; name: string }) => {
+    console.log('handleUpdateGroupName called, groupId:', groupId, 'name:', name);
+    updateCustomGroup({groupId, patch: { name }})
+  }, [updateCustomGroup]);
 
   // const handleGetGroups = useCallback(() => {
     
@@ -43,6 +47,7 @@ export function useGroupsActions() {
   return {
     handleCreateCustomGroup,
     handleDeleteCustomGroup,
-    handleUpdateCustomGroup
+    handleUpdateCustomGroup,
+    handleUpdateGroupName
   }
 }

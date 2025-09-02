@@ -9,11 +9,16 @@ import { Id } from "@/convex/_generated/dataModel";
 import { priorityColorCheckmark } from '../app/utils/priorityColors';
 import { useActiveTask } from "./ActiveTaskProvider";
 import EditableCheckCardBody from "./EditableCheckCardBody";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import Link from "next/link";
 
 const checkmarkContainer = cva("flex items-center justify-center h-4 group cursor-pointer")
-const checkCard = cva('flex items-center gap-2 group')
+const checkCard = cva('relative flex items-center gap-2 group')
 const checkmarkIcon = cva('w-auto h-full fill-icons duration-100 ease-in-out')
-// const checkCardBody = cva('h-full w-full py-2 transition-all duration-100 ease-in-out border-b border-transparent')
+const checkCardGroup = cva('absolute right-9 flex items-center gap-2 max-w-30')
+const checkCardGroupBody = cva("whitespace-nowrap select-none text-xs hover:underline cursor-pointer opacity-50 truncate")
+const checkCardGroupLabel = cva('w-2 h-2 rounded-full')
 const checkCardContent = cva("w-full flex flex-row items-center gap-2 group-hover:bg-gray-100 rounded-md text-sm px-4 duration-100 ease-in-out", {
   variants: {
     active: {
@@ -31,7 +36,7 @@ interface TaskCardProps {
     body: string;
     completed: boolean;
     dueDate?: string;
-    groupId?: Id<"taskGroups">;
+    groupId?: Id<"taskGroups"> | null;
     priority: 'common' | "low" | "medium" | "high";
     description?: string;
     subtasksCount: number
@@ -39,16 +44,20 @@ interface TaskCardProps {
   hasMultipleTasks: boolean;
   handleTaskCheck: (taskId: Id<"tasks">, completed: boolean) => void;
   handleOpenContextMenu: (event: React.MouseEvent, taskId: Id<"tasks">) => void;
+  activeGroup: string
 }
 
-export default function TaskCard({ task, hasMultipleTasks, handleTaskCheck, handleOpenContextMenu }: TaskCardProps) {
+export default function TaskCard({ task, hasMultipleTasks, handleTaskCheck, handleOpenContextMenu, activeGroup }: TaskCardProps) {
   const { activeTaskId, setActiveTaskId } = useActiveTask();
   const isActive = task._id === activeTaskId;
-
+  const groupData = useQuery(
+    api.groupsFunctions.getCustomGroup,
+    task.groupId ? { groupId: task.groupId } : "skip"
+  );
 
   return (
     <li key={task._id} className={checkCard()} onClick={() => setActiveTaskId(task._id)}>
-      <div className={checkCardContent( { active: isActive })}>
+      <div className={checkCardContent({ active: isActive, className: groupData?.color && `rounded-l-none relative after:content-[''] after:absolute after:-left-0.75 after:w-0.75 after:h-full after:bg-[var(--line-color)]` })} style={{ "--line-color": groupData?.color } as React.CSSProperties}>
         <span
           className={checkmarkContainer()}
           onClick={() => handleTaskCheck(task._id, !task.completed)}
@@ -74,13 +83,12 @@ export default function TaskCard({ task, hasMultipleTasks, handleTaskCheck, hand
 
         <EditableCheckCardBody taskId={task._id} completed={task.completed} body={task.body} hasMultipleTasks={hasMultipleTasks}/>
 
-        {/* <div
-          className={checkCardBody({
-            className: `${task.completed ? "opacity-30 group-hover:opacity-40" : "opacity-100"} ${hasMultipleTasks ? "!border-gray-200" : ""}`,
-          })}
-        >
-          {task.body}
-        </div> */}
+        {groupData && activeGroup !== groupData._id &&
+        <div className={checkCardGroup()}>
+          <div className={checkCardGroupLabel({className:`bg-[${groupData.color}]`})}></div>
+          <Link href={`/tasks/${groupData._id}`} className={checkCardGroupBody()}>{groupData.name}</Link>
+        </div>
+        }
 
       </div>
       <div className="w-[10px]">

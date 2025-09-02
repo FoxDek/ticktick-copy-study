@@ -2,6 +2,7 @@
 
 import { useSubtasksActions } from "@/app/hoocs/useSubtasksActions";
 import { Id } from "@/convex/_generated/dataModel";
+import { cva } from "class-variance-authority";
 import { useEffect, useRef, useState } from "react";
 
 interface EditableSubtaskBodyProps {
@@ -15,6 +16,8 @@ interface EditableSubtaskBodyProps {
   onFocusChange?: () => void;
   handleBackspaceDelete: (subtaskId: Id<"subtasks">) => void;
 }
+
+const subtaskBody = cva('text-sm font-normal w-full rounded-none border-none focus:outline-none leading-[19px]'); 
 
 export default function EditableSubtaskBody({
   subtaskId,
@@ -50,6 +53,7 @@ export default function EditableSubtaskBody({
     const timeout = setTimeout(() => {
       if (debouncedValue !== inputValue) {
         setDebouncedValue(inputValue);
+        if (!inputValue.trim()) return;
         handleSubtaskBodyChange(subtaskId, inputValue);
       }
     }, 600);
@@ -93,7 +97,7 @@ export default function EditableSubtaskBody({
           setIsEditing(true);
           onFocusChange?.();
         }}
-        className={`text-sm font-normal inline-block h-full w-full rounded-none border-none focus:outline-none cursor-text leading-[19px] ${completed && listDescToggler === "list" ? "opacity-30 group-hover:opacity-40" : "opacity-100"}`}
+        className={subtaskBody({className: `inline-block ${completed && listDescToggler === "list" ? "opacity-30 group-hover:opacity-40" : "opacity-100"}`})}
       >
         {inputValue || "\u00A0"}
       </div>
@@ -109,7 +113,7 @@ export default function EditableSubtaskBody({
       onKeyDown={handleKeyDown}
       onBlur={handleBlur}
       placeholder="Подзадача"
-      className='text-sm font-normal h-full w-full rounded-none border-none focus:outline-none leading-[19px] placeholder:opacity-0 focus:placeholder:opacity-100'
+      className={subtaskBody({className: 'placeholder:opacity-0 focus:placeholder:opacity-100'})}
     />
   );
 }

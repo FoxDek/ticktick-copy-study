@@ -2,8 +2,10 @@
 import { Id } from "@/convex/_generated/dataModel";
 import { cva } from "class-variance-authority";
 import { useActiveTask } from "../ActiveTaskProvider";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import TasksContextPriorityMenu from './TasksContextPriorityMenu';
+import { useTaskActions } from "@/app/hoocs/useTaskActions";
 
 const contextMenu = cva(
   "context-menu absolute bg-white shadow-lg rounded-md p-2 z-10 w-[200px]",
@@ -23,8 +25,16 @@ export default function TasksContextMenu({
 }) {
   const deleteTask = useMutation(api.tasksFunctions.deleteTask);
   const { setActiveTaskId } = useActiveTask();
+  const taskData = useQuery(api.tasksFunctions.getTask, taskId ? { taskId } : "skip");
+  const {handleDuplicateTask} = useTaskActions();
 
-  const handleDeleteTask = (e: React.MouseEvent) => {
+  const onDuplicateTask = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!taskData) return;
+    handleDuplicateTask({body: taskData?.body, groupId: taskData?.groupId});
+  }
+
+  const onDeleteTask = (e: React.MouseEvent) => {
     e.stopPropagation(); // Предотвращаем всплытие события до handleClickOutside
     if (!taskId) {
       console.error("taskId is null or undefined");
@@ -54,15 +64,17 @@ export default function TasksContextMenu({
   return (
     <div className={contextMenu()} style={{ top: position.y, left: adjustedX }}>
       <ul>
+        <TasksContextPriorityMenu priority={taskData?.priority} taskId={taskId} />
+
         <li className={contextMenuItem()}>Создать родительскую...</li>
         <li className={contextMenuItem()}>Закрепить</li>
         <li className={contextMenuItem()}>Не буду делать</li>
         <li className={contextMenuItem()}>Переместить в...</li>
         <li className={contextMenuItem()}>Метки</li>
-        <li className={contextMenuItem()}>Дублировать</li>
+        <li className={contextMenuItem()} onClick={(e) => onDuplicateTask(e)}>Дублировать</li>
         <li className={contextMenuItem()}>Копировать ссылку</li>
         <li className={contextMenuItem()}>Преобразовать в зам...</li>
-        <li className={contextMenuItem()} onClick={(e) => handleDeleteTask(e)}>
+        <li className={contextMenuItem()} onClick={(e) => onDeleteTask(e)}>
           Удалить
         </li>
       </ul>

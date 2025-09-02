@@ -3,15 +3,15 @@ import { Id } from "@/convex/_generated/dataModel";
 import { cva } from "class-variance-authority";
 import { useActiveTask } from "../ActiveTaskProvider";
 import { useGroupsActions } from "@/app/hoocs/useGroupsActions";
+import { baseGroups } from "@/app/utils/baseGroups";
 
 const contextMenu = cva(
-  "context-menu absolute bg-white shadow-lg rounded-md p-2 z-10 w-[150px]",
+  "contextMenu absolute bg-white shadow-lg rounded-md p-2 z-10 w-fit",
 );
 const contextMenuItem = cva(
-  "cursor-pointer hover:bg-gray-100 px-2.5 py-1.5 rounded-md text-sm whitespace-nowrap",
+  "contextMenuItem cursor-pointer hover:bg-gray-100 px-2.5 py-1.5 rounded-md text-xs whitespace-nowrap",
 );
 
-const basicGroups = ['all', 'today', 'inbox', 'deleted', 'completed'];
 
 export default function GroupsContextMenu({
   groupId,
@@ -68,16 +68,16 @@ export default function GroupsContextMenu({
     <div className={contextMenu()} style={{ top: position.y, left: adjustedX }}>
       <ul>
         <li className={contextMenuItem()} onClick={() => handleOpenMenuWithEditing()}>Редактировать</li>
-        {!basicGroups.includes(groupId) && <div>
+        {!Object.keys(baseGroups).includes(groupId) && <div>
           <li className={contextMenuItem()}>Закрепить</li>
           <li className={contextMenuItem()}>Дублировать</li>
           <li className={contextMenuItem()}>Поделиться</li>
           <li className={contextMenuItem()}>В архив</li>
           <li className={contextMenuItem()} onClick={(e) => handleDeleteGroup(e)}>Удалить</li>
         </div>}
-        {basicGroups.includes(groupId) && <div>
-          <li className={contextMenuItem()}>Дублировать</li>
-          <li className={contextMenuItem()}>Поделиться</li>
+        {Object.keys(baseGroups).includes(groupId) && <div>
+          <li className={contextMenuItem()}>Показывать, если не пусто</li>
+          <li className={contextMenuItem()}>Скрыть</li>
         </div>}
       </ul>
     </div>

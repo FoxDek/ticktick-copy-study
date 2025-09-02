@@ -39,7 +39,7 @@ export default function GroupCard({
       `}
       onClick={() => handleSelect()}
     >
-      <span className="aspect-square flex items-center justify-center max-h-4 h-full w-auto group rounded-smn">
+      <span className="aspect-square flex items-center justify-center max-h-4 h-full w-auto group rounded-sm">
         <Icon className="iconSvg w-full h-full fill-icons text-icons" />
       </span>
       <span className="mr-auto">{label}</span>

@@ -142,14 +142,14 @@ export default function CreateGroupMenu({setOpenCreateGroupMenu, setEditingGroup
         <span className={createGroupSubtitle()}>Цвет списка</span>
         <ul className={createGroupColorList()}>
           <li className={createGroupColorItem({className: `bg-white border border-gray-300 after:content-[""] after:absolute after:top-1/2 after:left-1/2 after:translate-x-[-50%] after:translate-y-[-50%] after:w-[0.5px] after:h-full after:bg-[#FF6161] after:rotate-45`, active: activeColor === 'none'})} onClick={() => setActiveColor('none')}></li>
-          <li className={createGroupColorItem({className: 'bg-[#FF6161]', active: activeColor === 'bg-[#FF6161]'})} onClick={() => setActiveColor('bg-[#FF6161]')}></li>
-          <li className={createGroupColorItem({className: 'bg-[#FFAC38]', active: activeColor === 'bg-[#FFAC38]'})} onClick={() => setActiveColor('bg-[#FFAC38]')}></li>
-          <li className={createGroupColorItem({className: 'bg-[#FFD324]', active: activeColor === 'bg-[#FFD324]'})} onClick={() => setActiveColor('bg-[#FFD324]')}></li>
-          <li className={createGroupColorItem({className: 'bg-[#E6EA49]', active: activeColor === 'bg-[#E6EA49]'})} onClick={() => setActiveColor('bg-[#E6EA49]')}></li>
-          <li className={createGroupColorItem({className: 'bg-[#35D870]', active: activeColor === 'bg-[#35D870]'})} onClick={() => setActiveColor('bg-[#35D870]')}></li>
-          <li className={createGroupColorItem({className: 'bg-[#4CA1FF]', active: activeColor === 'bg-[#4CA1FF]'})} onClick={() => setActiveColor('bg-[#4CA1FF]')}></li>
-          <li className={createGroupColorItem({className: 'bg-[#6E75F4]', active: activeColor === 'bg-[#6E75F4]'})} onClick={() => setActiveColor('bg-[#6E75F4]')}></li>
-          <li className={createGroupColorItem({className: 'bg-[#FF6161]', active: activeColor === 'bg-[#FF6161]'})} onClick={() => setActiveColor('bg-[#FF6161]')}></li>
+          <li className={createGroupColorItem({className: 'bg-[#FF6161]', active: activeColor === '#FF6161'})} onClick={() => setActiveColor('#FF6161')}></li>
+          <li className={createGroupColorItem({className: 'bg-[#FFAC38]', active: activeColor === '#FFAC38'})} onClick={() => setActiveColor('#FFAC38')}></li>
+          <li className={createGroupColorItem({className: 'bg-[#FFD324]', active: activeColor === '#FFD324'})} onClick={() => setActiveColor('#FFD324')}></li>
+          <li className={createGroupColorItem({className: 'bg-[#E6EA49]', active: activeColor === '#E6EA49'})} onClick={() => setActiveColor('#E6EA49')}></li>
+          <li className={createGroupColorItem({className: 'bg-[#35D870]', active: activeColor === '#35D870'})} onClick={() => setActiveColor('#35D870')}></li>
+          <li className={createGroupColorItem({className: 'bg-[#4CA1FF]', active: activeColor === '#4CA1FF'})} onClick={() => setActiveColor('#4CA1FF')}></li>
+          <li className={createGroupColorItem({className: 'bg-[#6E75F4]', active: activeColor === '#6E75F4'})} onClick={() => setActiveColor('#6E75F4')}></li>
+          <li className={createGroupColorItem({className: 'bg-[#FF6161]', active: activeColor === '#FF6161'})} onClick={() => setActiveColor('#FF6161')}></li>
         </ul>
       </div>
 

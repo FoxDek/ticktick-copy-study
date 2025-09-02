@@ -1,6 +1,6 @@
 import { Id } from "@/convex/_generated/dataModel";
 import GroupCard from "./GroupCard";
-import { icons } from "@/app/iconsLibrary";
+import { calendarIcons, icons } from "@/app/iconsLibrary";
 
 interface BasicGroupsProps {
   activeGroup: string;
@@ -9,6 +9,8 @@ interface BasicGroupsProps {
 }
 
 export default function BasicGroups({ activeGroup, setActiveGroup, handleOpenContextMenu }: BasicGroupsProps) {
+  const today = new Date();
+
   return (
     <ul className="basicGroups flex flex-col mb-4">
       <GroupCard
@@ -25,7 +27,7 @@ export default function BasicGroups({ activeGroup, setActiveGroup, handleOpenCon
         id="today"
         label="Сегодня"
         count={3}
-        icon={icons["today"]}
+        icon={calendarIcons[today.getDate() as keyof typeof calendarIcons]}
         activeGroup={activeGroup}
         onSelect={setActiveGroup}
         handleOpenContextMenu={handleOpenContextMenu}
