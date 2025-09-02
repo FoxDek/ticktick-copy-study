@@ -31,7 +31,7 @@ interface Task {
   body: string;
   completed: boolean;
   dueDate?: string;
-  groupId?: Id<"taskGroups">;
+  groupId?: Id<"taskGroups"> | null;
   priority: Priority;
   description?: string;
   subtasksCount: number;
@@ -134,7 +134,7 @@ export default function TaskFullView({ taskData, subtasks }: { taskData: Task | 
             {groupData ? groupData.name : "Без группы"}
           </button>
 
-          {groupMenuIsOpen && <FullTaskGroupMenu setGroupMenuIsOpen={setGroupMenuIsOpen} taskId={taskData._id} groupId={taskData.groupId} groupMenuIsOpen={groupMenuIsOpen}/>}
+          {groupMenuIsOpen && taskData.groupId && <FullTaskGroupMenu setGroupMenuIsOpen={setGroupMenuIsOpen} taskId={taskData._id} groupId={taskData.groupId} groupMenuIsOpen={groupMenuIsOpen}/>}
 
           <div className={fullTaskBottomButtons()}>
             <IconButton onClick={() => { console.log('abiba') }}>
