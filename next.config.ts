@@ -8,15 +8,6 @@ const nextConfig: NextConfig = {
     });
     return config;
   },
-  async redirects() {
-    return [
-      {
-        source: '/',
-        destination: '/tasks/all',
-        permanent: true, // true для 301 (постоянный), false для 302 (временный)
-      },
-    ];
-  },
 };
 
 export default nextConfig;
