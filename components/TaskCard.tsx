@@ -86,7 +86,7 @@ export default function TaskCard({ task, hasMultipleTasks, handleTaskCheck, hand
         {groupData && activeGroup !== groupData._id &&
         <div className={checkCardGroup()}>
           <div className={checkCardGroupLabel({className:`bg-[${groupData.color}]`})}></div>
-          <Link href={`/tasks/${groupData._id}`} className={checkCardGroupBody()}>{groupData.name}</Link>
+          <Link href={`/tasks/${groupData._id}`} className={checkCardGroupBody()} onClick={(e) => e.stopPropagation()}>{groupData.name}</Link>
         </div>
         }
 

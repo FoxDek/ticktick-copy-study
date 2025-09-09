@@ -6,6 +6,8 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import TasksContextPriorityMenu from './TasksContextPriorityMenu';
 import { useTaskActions } from "@/app/hoocs/useTaskActions";
+import TasksContextGroupMenu from './TasksContextGroupMenu';
+import { useRef, useState } from "react";
 
 const contextMenu = cva(
   "context-menu absolute bg-white shadow-lg rounded-md p-2 z-10 w-[200px]",
@@ -16,17 +18,35 @@ const contextMenuItem = cva(
 
 export default function TasksContextMenu({
   taskId,
-  onClose,
+  onCloseContextMenu,
   position,
 }: {
   taskId: Id<"tasks"> | null;
-  onClose: () => void;
+  onCloseContextMenu: () => void;
   position: { x: number; y: number };
 }) {
   const deleteTask = useMutation(api.tasksFunctions.deleteTask);
   const { setActiveTaskId } = useActiveTask();
   const taskData = useQuery(api.tasksFunctions.getTask, taskId ? { taskId } : "skip");
   const {handleDuplicateTask} = useTaskActions();
+  const [groupContextMenuIsOpen, setGroupContextMenuIsOpen] = useState(false);
+  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleMouseLeave = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+    }
+    closeTimeoutRef.current = setTimeout(() => {
+      setGroupContextMenuIsOpen(false);
+    }, 300);
+  }
+
+  const handleMouseEnter = () => {
+    setGroupContextMenuIsOpen(true);
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+    }
+  }
 
   const onDuplicateTask = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -44,7 +64,7 @@ export default function TasksContextMenu({
     deleteTask({ taskId })
       .then(() => {
         console.log("Task deleted successfully");
-        onClose();
+        onCloseContextMenu();
         setActiveTaskId(null);
       })
       .catch((error) => {
@@ -69,7 +89,12 @@ export default function TasksContextMenu({
         <li className={contextMenuItem()}>Создать родительскую...</li>
         <li className={contextMenuItem()}>Закрепить</li>
         <li className={contextMenuItem()}>Не буду делать</li>
-        <li className={contextMenuItem()}>Переместить в...</li>
+        <li className={contextMenuItem({className: "relative group"})} onMouseEnter={() => handleMouseEnter()} onMouseLeave={() => handleMouseLeave()}>
+          <span>Переместить в...</span>
+          {taskData && groupContextMenuIsOpen && <div onMouseEnter={() => handleMouseEnter()}>
+            <TasksContextGroupMenu onCloseContextMenu={onCloseContextMenu} taskId={taskId} groupId={taskData?.groupId as Id<"taskGroups">} groupContextMenuIsOpen={groupContextMenuIsOpen}/>
+          </div>}
+        </li>
         <li className={contextMenuItem()}>Метки</li>
         <li className={contextMenuItem()} onClick={(e) => onDuplicateTask(e)}>Дублировать</li>
         <li className={contextMenuItem()}>Копировать ссылку</li>
@@ -78,6 +103,7 @@ export default function TasksContextMenu({
           Удалить
         </li>
       </ul>
+
     </div>
   );
 }

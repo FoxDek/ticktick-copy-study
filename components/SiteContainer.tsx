@@ -4,6 +4,7 @@ import AsideMenu from "@/components/AsideMenu";
 import ProjectsListMenu from "@/components/ProjectsListMenu";
 import { useSidebar } from "./SidebarProvider";
 import { Authenticated } from "convex/react";
+import SettingsMenu from "./menu-components/SettingsMenu";
 
 export default function SiteContainer({ children }: { children: React.ReactNode } ) {
   const {sidebarIsOpen} = useSidebar();
@@ -14,6 +15,7 @@ export default function SiteContainer({ children }: { children: React.ReactNode 
       <Authenticated>
         <AsideMenu />
         <ProjectsListMenu sidebarIsOpen={sidebarIsOpen}/>
+        <SettingsMenu />
       </Authenticated>
 
       <main className="w-full">{children}</main>

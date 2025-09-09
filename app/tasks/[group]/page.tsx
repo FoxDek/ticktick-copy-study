@@ -5,16 +5,16 @@ import { useMutation, useQuery } from "convex/react"; // useConvexAuth
 import { api } from "@/convex/_generated/api";
 import SidebarCloseIcon from "@/public/sidebar-close-icon.svg";
 import SidebarOpenIcon from "@/public/sidebar-open-icon.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSidebar } from "@/components/SidebarProvider";
 import { cva } from "class-variance-authority";
 import TasksList from "@/components/TasksList";
 import { Id } from "@/convex/_generated/dataModel";
 import TaskFullView from "@/components/TaskFullView";
 import { useActiveTask } from "@/components/ActiveTaskProvider";
-import { useParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { baseGroups } from "@/app/utils/baseGroups";
-import EditableGroupTitle from '../../../components/EditableGroupTitle';
+import EditableGroupTitle from "@/components/EditableGroupTitle";
 
 const tasks = cva("tasks flex flex-col gap-6 border-r border-gray-200 w-full h-full")
 const tasksTop = cva("tasksTop flex items-center px-6 pt-6 min-h-[52px]")
@@ -29,12 +29,37 @@ export default function Tasks() {
   const {sidebarIsOpen, setSidebarIsOpen} = useSidebar();
   const Icon = sidebarIsOpen ? SidebarCloseIcon : SidebarOpenIcon;
   const [inputValue, setInputValue] = useState("");
-  const {activeTaskId} = useActiveTask();
+  const {activeTaskId, setActiveTaskId} = useActiveTask();
   const addTask = useMutation(api.tasksFunctions.addTask);
   const activeTask = useQuery(api.tasksFunctions.getTask, activeTaskId ? { taskId: activeTaskId as Id<"tasks"> } : "skip");
   const subtasks = useQuery(api.subtasksFunctions.getSubtasks, activeTaskId ? { taskId: activeTaskId as Id<"tasks"> } : "skip")
-
   const activeGroup = useParams<{ group: string }>().group;
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+    useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (activeTaskId) {
+      params.set('taskId', activeTaskId);
+      router.replace(`?${params.toString()}`);
+    } else {
+      params.delete('taskId');
+      router.replace(`?${params.toString()}`);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTaskId]);
+
+  useEffect(() => {
+    const id = searchParams.get('taskId');
+    if (id && id !== activeTaskId) {
+      setActiveTaskId(id as Id<"tasks">);
+    }
+
+    if (!id && activeTaskId) {
+      setActiveTaskId(null);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const handleAddTask = () => {
     if (activeGroup === 'all' || activeGroup === 'inbox') {
@@ -46,9 +71,6 @@ export default function Tasks() {
     }
     setInputValue("");
   };
-
-
-
 
   const customGroup = useQuery(
     api.groupsFunctions.getCustomGroup,

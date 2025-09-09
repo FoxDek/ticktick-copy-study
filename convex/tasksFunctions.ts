@@ -116,4 +116,22 @@ export const updateTask = mutation({
 });
 
 
+export const deleteTasksByGroup = mutation({
+  args: {
+    groupId: v.id("taskGroups"),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new Error("User not authenticated");
+    }
+    
+    for await (const task of ctx.db
+      .query("tasks")
+      .withIndex("by_groupId", q => q.eq("groupId", args.groupId))) {
+      await ctx.db.delete(task._id); // удалить документ по Id
+    }
+  },
+});
+
 

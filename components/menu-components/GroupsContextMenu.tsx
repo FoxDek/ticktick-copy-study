@@ -1,8 +1,6 @@
 "use client";
 import { Id } from "@/convex/_generated/dataModel";
 import { cva } from "class-variance-authority";
-import { useActiveTask } from "../ActiveTaskProvider";
-import { useGroupsActions } from "@/app/hoocs/useGroupsActions";
 import { baseGroups } from "@/app/utils/baseGroups";
 
 const contextMenu = cva(
@@ -15,38 +13,20 @@ const contextMenuItem = cva(
 
 export default function GroupsContextMenu({
   groupId,
-  onClose,
+  onCloseContextMenu,
   position,
   setEditingGroupId,
   setOpenCreateGroupMenu,
+  setOpenDeleteGroupWindow,
 }: {
   groupId: Id<"taskGroups"> | string | null;
-  onClose: () => void;
+  onCloseContextMenu: () => void;
   position: { x: number; y: number };
   setEditingGroupId: (groupId: Id<"taskGroups"> | null) => void;
   setOpenCreateGroupMenu: (value: boolean) => void;
+  setOpenDeleteGroupWindow: (value: boolean) => void;
 }) {
-  const {handleDeleteCustomGroup} = useGroupsActions();
-  const { setActiveTaskId } = useActiveTask();
 
-  const handleDeleteGroup = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Предотвращаем всплытие события до handleClickOutside
-    if (!groupId) {
-      console.error("groupId is null or undefined");
-      return;
-    }
-    console.log(typeof groupId);
-
-    handleDeleteCustomGroup({ groupId: groupId as Id<"taskGroups"> })
-      .then(() => {
-        console.log("Task deleted successfully");
-        onClose();
-        setActiveTaskId(null);
-      })
-      .catch((error) => {
-        console.error("Error deleting task:", error);
-      });
-  };
 
   if (!groupId) {
     console.log("ContextMenu not rendered: groupId is null");
@@ -61,8 +41,14 @@ export default function GroupsContextMenu({
   const handleOpenMenuWithEditing = () => {
     setOpenCreateGroupMenu(true);
     setEditingGroupId(groupId as Id<"taskGroups">);
-    onClose();
+    onCloseContextMenu();
   };
+
+  const handleOpenDeleteGroupWindow = () => {
+    setOpenDeleteGroupWindow(true);
+    setEditingGroupId(groupId as Id<"taskGroups">);
+    onCloseContextMenu();
+  }
 
   return (
     <div className={contextMenu()} style={{ top: position.y, left: adjustedX }}>
@@ -73,7 +59,7 @@ export default function GroupsContextMenu({
           <li className={contextMenuItem()}>Дублировать</li>
           <li className={contextMenuItem()}>Поделиться</li>
           <li className={contextMenuItem()}>В архив</li>
-          <li className={contextMenuItem()} onClick={(e) => handleDeleteGroup(e)}>Удалить</li>
+          <li className={contextMenuItem()} onClick={() => handleOpenDeleteGroupWindow()}>Удалить</li>
         </div>}
         {Object.keys(baseGroups).includes(groupId) && <div>
           <li className={contextMenuItem()}>Показывать, если не пусто</li>

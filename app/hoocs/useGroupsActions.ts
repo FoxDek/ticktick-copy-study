@@ -19,16 +19,20 @@ export function useGroupsActions() {
   const createCustomGroup = useMutation(api.groupsFunctions.createCustomGroup)
   const deleteCustomGroup = useMutation(api.groupsFunctions.deleteCustomGroup)
   const updateCustomGroup = useMutation(api.groupsFunctions.updateCustomGroup)
+  const deleteTasksByGroup = useMutation(api.tasksFunctions.deleteTasksByGroup)
 
   const handleCreateCustomGroup = useCallback(({ name, color, icon }: GroupProps) => {
     console.log('handleCreateCustomGroup called, name:', name, 'color:', color, 'icon:', icon);
     createCustomGroup({ name, color, icon })
   }, [createCustomGroup]);
 
-  const handleDeleteCustomGroup = useCallback(({ groupId }: { groupId: Id<"taskGroups"> }) => {
+  const handleDeleteCustomGroup = useCallback(({ groupId, alsoDeleteTasks }: { groupId: Id<"taskGroups">, alsoDeleteTasks: boolean }) => {
     console.log('handleDeleteCustomGroup called, groupId:', groupId);
+    if (alsoDeleteTasks) {
+      deleteTasksByGroup({ groupId })
+    }
     return deleteCustomGroup({ groupId })
-  }, [deleteCustomGroup]);
+  }, [deleteCustomGroup, deleteTasksByGroup]);
 
   const handleUpdateCustomGroup = useCallback(({ groupId, patch: { name, color, icon } }: UpdateGroupProps) => {
     console.log('handleUpdateCustomGroup called, groupId:', groupId, 'name:', name, 'color:', color, 'icon:', icon);

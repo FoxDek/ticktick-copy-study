@@ -13,6 +13,7 @@ import GroupsContextMenu from "./menu-components/GroupsContextMenu";
 import BasicGroups from './BasicGroups';
 import BasicFooterGroups from "./BasicFooterGroups";
 import { useParams } from "next/navigation";
+import DeleteGroupMenu from "./menu-components/DeleteGroupMenu";
 
 const projectsListMenu = cva(
   "projectsListMenu w-[320px] bg-gradient-to-b from-[#e0e2f8] to-[#f4ecf9] p-3 select-none",
@@ -42,6 +43,7 @@ export default function ProjectsListMenu(sidebarIsOpen: {
   const [openFilteredList, setOpenFilteredList] = useState(true);
   const [openTaggedList, setOpenTaggedList] = useState(true);
   const [openCreateGroupMenu, setOpenCreateGroupMenu] = useState(false);
+  const [openDeleteGroupWindow, setOpenDeleteGroupWindow] = useState(false);
   const [contextMenu, setContextMenu] = useState<{
     isOpen: boolean;
     groupId: Id<"taskGroups"> | string | null;
@@ -223,7 +225,9 @@ export default function ProjectsListMenu(sidebarIsOpen: {
         <CreateGroupMenu setOpenCreateGroupMenu={setOpenCreateGroupMenu} setEditingGroupId={setEditingGroupId} editingGroupId={editingGroupId}/>
       )}
 
-      {contextMenu.isOpen && <GroupsContextMenu groupId={contextMenu.groupId} onClose={handleCloseContextMenu} position={contextMenu.position} setEditingGroupId={setEditingGroupId} setOpenCreateGroupMenu={setOpenCreateGroupMenu}/>}
+      {openDeleteGroupWindow && <DeleteGroupMenu setEditingGroupId={setEditingGroupId} editingGroupId={editingGroupId} onCloseContextMenu={handleCloseContextMenu} setOpenDeleteGroupWindow={setOpenDeleteGroupWindow}/> }
+
+      {contextMenu.isOpen && <GroupsContextMenu groupId={contextMenu.groupId} onCloseContextMenu={handleCloseContextMenu} position={contextMenu.position} setEditingGroupId={setEditingGroupId} setOpenCreateGroupMenu={setOpenCreateGroupMenu} setOpenDeleteGroupWindow={setOpenDeleteGroupWindow}/>}
     </section>
   );
 }

@@ -74,7 +74,7 @@ export default function TasksList({ activeGroup }: { activeGroup: string }) {
       {contextMenu.isOpen && (
         <TasksContextMenu
           taskId={contextMenu.taskId}
-          onClose={handleCloseContextMenu}
+          onCloseContextMenu={handleCloseContextMenu}
           position={contextMenu.position}
         />
       )}

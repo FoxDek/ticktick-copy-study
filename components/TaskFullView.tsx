@@ -81,7 +81,7 @@ export default function TaskFullView({ taskData, subtasks }: { taskData: Task | 
   return (
     <div className="h-full">
 
-      {taskData ? <div className={taskFullView()}>
+      {taskData === null ? 'нет такой задачи' : taskData ? <div className={taskFullView()}>
         <div className={fullTaskTop()}>
           <div className="flex items-center">
             <span className={checkmarkContainer()} onClick={() => taskData && handleTaskCheck(taskData?._id, !taskData?.completed)}>
@@ -134,7 +134,7 @@ export default function TaskFullView({ taskData, subtasks }: { taskData: Task | 
             {groupData ? groupData.name : "Без группы"}
           </button>
 
-          {groupMenuIsOpen && taskData.groupId && <FullTaskGroupMenu setGroupMenuIsOpen={setGroupMenuIsOpen} taskId={taskData._id} groupId={taskData.groupId} groupMenuIsOpen={groupMenuIsOpen}/>}
+          {groupMenuIsOpen && <FullTaskGroupMenu setGroupMenuIsOpen={setGroupMenuIsOpen} taskId={taskData._id} groupId={taskData.groupId || undefined} groupMenuIsOpen={groupMenuIsOpen}/>}
 
           <div className={fullTaskBottomButtons()}>
             <IconButton onClick={() => { console.log('abiba') }}>
