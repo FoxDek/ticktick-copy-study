@@ -6,14 +6,10 @@ import {
 
 const isSignInPage = createRouteMatcher(["/signin"]);
 const isProtectedRoute = createRouteMatcher(["/tasks(.*)", "/server"]);
-const isRootRoute = createRouteMatcher(["/"]);
+// const isRootRoute = createRouteMatcher(["/"]);
 
 export default convexAuthNextjsMiddleware(async (request, { convexAuth }) => {
   if (isSignInPage(request) && (await convexAuth.isAuthenticated())) {
-    return nextjsMiddlewareRedirect(request, "/tasks/all");
-  }
-
-  if (isRootRoute(request) && (await convexAuth.isAuthenticated())) {
     return nextjsMiddlewareRedirect(request, "/tasks/all");
   }
 

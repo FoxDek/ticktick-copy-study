@@ -8,6 +8,25 @@ const nextConfig: NextConfig = {
     });
     return config;
   },
+
+  // async rewrites() {
+  //   return [
+  //     {
+  //       source: "/",
+  //       destination: "/tasks/all",
+  //     },
+  //   ];
+  // },
+
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/tasks/all',
+        permanent: true,
+      },
+    ]
+  },
 };
 
 export default nextConfig;
