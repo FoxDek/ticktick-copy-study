@@ -1,8 +1,8 @@
 import { cva } from "class-variance-authority";
 import SwitchButton from "../SwitchButton";
 import { dateTimeDefaultSettings, dateTimeSettingsOptions, dateTimeOptionsLabels } from "@/app/constants/settings-data";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
+// import { useQuery } from "convex/react";
+// import { api } from "@/convex/_generated/api";
 import CheckIcon from "@/public/check-icon.svg";
 import SelectionIcon from '@/public/selection-icon.svg'
 import { useEffect, useState } from "react";
@@ -36,7 +36,7 @@ export default function DateTimeSettingsTab() {
       position: { x: number; y: number };
       mode: string | number;
     }>({ isOpen: false, settings: ['show', 'hide'], position: { x: 0, y: 0 }, mode: '' });
-  const userData = useQuery(api.usersFunctions.currentUser);
+  // const userData = useQuery(api.usersFunctions.currentUser);
   const userDateTimeSettings = dateTimeDefaultSettings; // userData?.userNotificationsSettings ||
 
   const handleOpenContextMenu = (
