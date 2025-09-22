@@ -8,8 +8,7 @@ import SyncIcon from "@/public/sync-icon.svg";
 import NotifIcon from "@/public/notif-icon.svg";
 import QuestionIcon from "@/public/question-icon.svg";
 import { cva } from "class-variance-authority";
-import { useEffect, useState } from "react";
-import AsideUserContextMenu from "./menu-components/AsideUserContextMenu";
+import { useState } from "react";
 import colorThemesStyles from "@/app/constants/themes-styles";
 import { useTheme } from "./ThemeProvider";
 

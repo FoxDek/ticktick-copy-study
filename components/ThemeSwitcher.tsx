@@ -89,6 +89,7 @@ export function ThemeSwitcher({
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dragging]);
 
   return (
