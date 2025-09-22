@@ -14,14 +14,16 @@ import BasicGroups from './BasicGroups';
 import BasicFooterGroups from "./BasicFooterGroups";
 import { useParams } from "next/navigation";
 import DeleteGroupMenu from "./menu-components/DeleteGroupMenu";
+import { useTheme } from "./ThemeProvider";
+import colorThemesStyles from "@/app/constants/themes-styles";
 
 const projectsListMenu = cva(
-  "projectsListMenu w-[320px] bg-gradient-to-b from-[#e0e2f8] to-[#f4ecf9] p-3 select-none",
+  "projectsListMenu w-[320px] p-3 select-none",
 );
 
 const groupContainer = cva("groupsContainer mb-4");
 const groupToggler = cva(
-  "groupsToggler group flex justify-between items-center text-xs cursor-pointer text-black/30 font-bold hover:bg-[#796bb3]/10 px-2.5 py-1.5 rounded-md",
+  "groupsToggler group flex justify-between items-center text-xs cursor-pointer font-bold hover:bg-[#796bb3]/10 px-2.5 py-1.5 rounded-md",
 );
 const groupAddButton = cva(
   "groupAddButton aspect-square flex items-center justify-center max-h-2.5 h-full w-auto group rounded-sm cursor-pointer",
@@ -31,7 +33,7 @@ const groupAddButtonIcon = cva(
 );
 const groupList = cva("groupList flex flex-col");
 const groupHint = cva(
-  "groupHint text-xs py-2 px-3 bg-icons/10 text-icons/80 rounded-md",
+  "groupHint text-xs py-2 px-3 bg-icons/10 rounded-md",
 );
 
 export default function ProjectsListMenu(sidebarIsOpen: {
@@ -50,6 +52,8 @@ export default function ProjectsListMenu(sidebarIsOpen: {
     position: { x: number; y: number };
   }>({ isOpen: false, groupId: null, position: { x: 0, y: 0 } });
   const [editingGroupId, setEditingGroupId] = useState<Id<"taskGroups"> | null>(null);
+  const { theme } = useTheme();
+  const themeStyles = colorThemesStyles[theme as keyof typeof colorThemesStyles];
 
   useEffect(() => {
     if (params.group) {
@@ -106,7 +110,7 @@ export default function ProjectsListMenu(sidebarIsOpen: {
 
   return (
     <section
-      className={projectsListMenu()}
+      className={projectsListMenu({ className: `${themeStyles.projectsList}` })}
       hidden={!sidebarIsOpen.sidebarIsOpen}
     >
       <BasicGroups activeGroup={activeGroup} setActiveGroup={setActiveGroup} handleOpenContextMenu={handleOpenContextMenu} />
@@ -115,7 +119,7 @@ export default function ProjectsListMenu(sidebarIsOpen: {
 
       <div className={groupContainer()}>
         <div
-          className={groupToggler()}
+          className={groupToggler({ className: `${themeStyles.textColor} opacity-40` })}
           onClick={() => setOpenCustomList(!openCustomList)}
         >
           Список
@@ -143,7 +147,7 @@ export default function ProjectsListMenu(sidebarIsOpen: {
             ))}
           </ul>
         ) : (
-          <div className={groupHint()} hidden={!openCustomList}>
+          <div className={groupHint({ className: `${themeStyles.textColor} opacity-60`})} hidden={!openCustomList}>
             Создайте свои списки задач
           </div>
         )}
@@ -151,7 +155,7 @@ export default function ProjectsListMenu(sidebarIsOpen: {
 
       <div className={groupContainer()}>
         <div
-          className={groupToggler()}
+          className={groupToggler({ className: `${themeStyles.textColor} opacity-40` })}
           onClick={() => setOpenFilteredList(!openFilteredList)}
         >
           Фильтры
@@ -176,7 +180,7 @@ export default function ProjectsListMenu(sidebarIsOpen: {
             />
           </ul>
         ) : (
-          <div className={groupHint()} hidden={!openFilteredList}>
+          <div className={groupHint({ className: `${themeStyles.textColor} opacity-60`})} hidden={!openFilteredList}>
             Отображение задач, отфильтрованных по списку, дате, приоритету,
             метке и другим параметрам.
           </div>
@@ -185,7 +189,7 @@ export default function ProjectsListMenu(sidebarIsOpen: {
 
       <div className={groupContainer()}>
         <div
-          className={groupToggler()}
+          className={groupToggler({ className: `${themeStyles.textColor} opacity-40` })}
           onClick={() => setOpenTaggedList(!openTaggedList)}
         >
           Метки
@@ -210,7 +214,7 @@ export default function ProjectsListMenu(sidebarIsOpen: {
             />
           </ul>
         ) : (
-          <div className={groupHint()} hidden={!openTaggedList}>
+          <div className={groupHint({ className: `${themeStyles.textColor} opacity-60`})} hidden={!openTaggedList}>
             Категоризуйте свои задачи с помощью меток. Быстро выберите метку,
             введя &quot;#&quot; при добавлении задачи.
           </div>

@@ -1,5 +1,4 @@
 import AllTasksIcon from "@/public/all-tasks-icon.svg";
-import TodayTasksIcon from "@/public/today-tasks-icon.svg";
 import InboxTasksIcon from "@/public/inbox-icon.svg";
 import PlusIcon from "@/public/plus-icon.svg";
 import CheckmarkNoBg from "@/public/checkmark-noback-icon.svg";
@@ -38,17 +37,8 @@ import calendarIcon29 from "@/public/calendar-day-icons/calendar-29-icon.svg";
 import calendarIcon30 from "@/public/calendar-day-icons/calendar-30-icon.svg";
 import calendarIcon31 from "@/public/calendar-day-icons/calendar-31-icon.svg";
 
-export const icons = {
-  all: AllTasksIcon,
-  today: TodayTasksIcon,
-  inbox: InboxTasksIcon,
-  plus: PlusIcon,
-  checkmarkNoBg: CheckmarkNoBg,
-  trash: TrashIcon,
-  newList: NewListIcon
-};
 
-export const calendarIcons = {
+const calendarIcons = {
   1: calendarIcon1,
   2: calendarIcon2,
   3: calendarIcon3,
@@ -81,6 +71,28 @@ export const calendarIcons = {
   30: calendarIcon30,
   31: calendarIcon31
 }
+
+const today = new Date();
+export const TodayTasksIcon = calendarIcons[today.getDate() as keyof typeof calendarIcons]
+
+export const icons = {
+  all: AllTasksIcon,
+  today: TodayTasksIcon,
+  tomorrow: PlusIcon,
+  next7days: PlusIcon,
+  assignedToMe: PlusIcon,
+  inbox: InboxTasksIcon,
+  summary: PlusIcon,
+  tags: PlusIcon,
+  filters: PlusIcon,
+  completed: PlusIcon,
+  cancelled: PlusIcon,
+  deleted: PlusIcon,
+  plus: PlusIcon,
+  checkmarkNoBg: CheckmarkNoBg,
+  trash: TrashIcon,
+  newList: NewListIcon,
+};
 
 // export type IconName = keyof typeof icons;
 // export const iconNames = ["all", "today", "inbox", "plus", "checkmarkNoBg", "trash", "newList"] as const;

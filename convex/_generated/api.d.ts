@@ -18,6 +18,7 @@ import type * as groupsFunctions from "../groupsFunctions.js";
 import type * as http from "../http.js";
 import type * as subtasksFunctions from "../subtasksFunctions.js";
 import type * as tasksFunctions from "../tasksFunctions.js";
+import type * as usersFunctions from "../usersFunctions.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -33,6 +34,7 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   subtasksFunctions: typeof subtasksFunctions;
   tasksFunctions: typeof tasksFunctions;
+  usersFunctions: typeof usersFunctions;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

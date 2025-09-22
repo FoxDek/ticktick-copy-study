@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Roboto } from "next/font/google";
 import "./globals.css";
 import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
 import ConvexClientProvider from "@/components/ConvexClientProvider";
 import SiteContainer from '../components/SiteContainer';
 import { SidebarProvider } from "@/components/SidebarProvider";
 import { ActiveTaskProvider } from "@/components/ActiveTaskProvider";
+import { ThemeProvider } from "@/components/ThemeProvider";
 // import  from "@/public/";
 
 const geistSans = Geist({
@@ -18,11 +19,16 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// const roboto = Roboto({
+//   subsets: ["latin", "cyrillic"], // если нужен кириллический
+//   weight: ["300", "400", "500", "700"], // нужные начертания
+// });
+
 export const metadata: Metadata = {
   title: "TickTick",
   description: "Study project – copy of TickTick app",
   icons: {
-    icon: "/ticktick.ico",
+    icon: "/favicon.ico",
   },
 };
 
@@ -40,7 +46,9 @@ export default function RootLayout({
           <ConvexClientProvider>
             <SidebarProvider>
               <ActiveTaskProvider>
-                <SiteContainer>{children}</SiteContainer>
+                <ThemeProvider>
+                  <SiteContainer>{children}</SiteContainer>
+                </ThemeProvider>
               </ActiveTaskProvider>
             </SidebarProvider>
           </ConvexClientProvider>

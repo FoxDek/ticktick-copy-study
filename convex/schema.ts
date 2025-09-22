@@ -8,6 +8,26 @@ import { authTables } from "@convex-dev/auth/server";
 export default defineSchema({
   ...authTables,
 
+  users: defineTable({
+    name: v.optional(v.string()),
+    image: v.optional(v.string()),
+    chosenSmarts: v.optional(v.array(v.object({ name: v.string(), mode: v.number() }))),
+    themeSettings: v.optional(v.object(
+      {
+        theme: v.optional(v.string()),
+        sidebars: v.optional(v.union(v.literal("all"), v.literal("hide_note"), v.literal("hide"))),
+        completedStyle: v.optional(v.union(v.literal("default"), v.literal("strikethrough")))
+      }
+    )),
+    email: v.optional(v.string()),
+    emailVerificationTime: v.optional(v.number()),
+    phone: v.optional(v.string()),
+    phoneVerificationTime: v.optional(v.number()),
+    isAnonymous: v.optional(v.boolean()),
+  })
+    .index("email", ["email"])
+    .index("phone", ["phone"]),
+
   taskGroups: defineTable({
     name: v.string(),
     userId: v.id("users"),
