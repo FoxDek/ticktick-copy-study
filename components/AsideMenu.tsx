@@ -13,32 +13,16 @@ import AsideUserContextMenu from "./menu-components/AsideUserContextMenu";
 import colorThemesStyles from "@/app/constants/themes-styles";
 import { useTheme } from "./ThemeProvider";
 
-const asideMenu = cva(`asideMenu max-w-[50px] w-full px-2 py-4 flex flex-col items-center justify-between`);
+const asideMenu = cva(`asideMenu max-w-[50px] w-full px-2 py-4 flex-col items-center justify-between hidden xs:flex`);
 const asideMenuNav = cva("asideMenuNav flex flex-col items-center gap-6 w-full");
 const profileImageContainer = cva("profileImageContainer relative aspect-square w-full overflow-hidden rounded-md cursor-pointer");
 const iconContainer = cva("iconContainer flex items-center justify-center w-5 group");
 const iconSvg = cva("iconSvg w-full h-full duration-100 ease-in-out");
 
-export default function AsideMenu() {
+export default function AsideMenu({isUserContextMenuOpen, setIsUserContextMenuOpen}: {isUserContextMenuOpen: boolean, setIsUserContextMenuOpen: (value: boolean) => void}) {
   const [activeTab, setActiveTab] = useState('tasks');
-  const [isUserContextMenuOpen, setIsUserContextMenuOpen] = useState(false);
   const { theme } = useTheme();
   const themeStyles = colorThemesStyles[theme as keyof typeof colorThemesStyles];
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        isUserContextMenuOpen &&
-        e.target instanceof Element &&
-        !e.target.closest(".asideUserContextMenu") &&
-        !e.target.closest(".profileImageContainer")
-      ) {
-        setIsUserContextMenuOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isUserContextMenuOpen]);
 
   return (
     <aside className={asideMenu({className: `${themeStyles.asideMenu}`})}>
@@ -60,17 +44,16 @@ export default function AsideMenu() {
         <Link href={"/search"} className={iconContainer()} onClick={() => setActiveTab('search')}>
           <SearchIcon className={iconSvg({ className: activeTab === 'search' ? `${themeStyles.asideMenuIconsAccent}` : `${themeStyles.asideMenuIcons}`})} />
         </Link>
-        {isUserContextMenuOpen && <AsideUserContextMenu setIsUserContextMenuOpen={setIsUserContextMenuOpen}/>}
       </nav>
       <div className={asideMenuNav({ className: "mb-3" })}>
         <Link href={"#"} className={iconContainer()}>
-          <SyncIcon className={iconSvg({ className: activeTab === 'sync' ? `${themeStyles.asideMenuIconsAccent}` : `${themeStyles.asideMenuIcons}` })} />
+          <SyncIcon className={iconSvg({ className: `${themeStyles.asideMenuIcons}` })} />
         </Link>
         <Link href={"#"} className={iconContainer()}>
-          <NotifIcon className={iconSvg({ className: activeTab === 'notifications' ? `${themeStyles.asideMenuIconsAccent}` : `${themeStyles.asideMenuIcons}` })} />
+          <NotifIcon className={iconSvg({ className: `${themeStyles.asideMenuIcons}` })} />
         </Link>
         <Link href={"#"} className={iconContainer()}>
-          <QuestionIcon className={iconSvg({ className: activeTab === 'help' ? `${themeStyles.asideMenuIconsAccent}` : `${themeStyles.asideMenuIcons}` })} />
+          <QuestionIcon className={iconSvg({ className: `${themeStyles.asideMenuIcons}` })} />
         </Link>
       </div>
     </aside>

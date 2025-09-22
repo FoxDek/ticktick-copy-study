@@ -15,6 +15,8 @@ import { useActiveTask } from "@/components/ActiveTaskProvider";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { baseGroups } from "@/app/utils/baseGroups";
 import EditableGroupTitle from "@/components/EditableGroupTitle";
+import { useTheme } from "@/components/ThemeProvider";
+import colorThemesStyles from "@/app/constants/themes-styles";
 
 const tasks = cva("tasks flex flex-col gap-6 border-r border-gray-200 w-full h-full")
 const tasksTop = cva("tasksTop flex items-center px-6 pt-6 min-h-[52px]")
@@ -22,11 +24,12 @@ const toggleSidebarButton = cva("toggleSidebarButton flex items-center justify-c
 const toggleSidebarButtonIcon = cva('toggleSidebarButtonIcon w-full h-full duration-100 ease-in-out fill-icons')
 const tasksTopTitle = cva("tasksTopTitle text-xl font-semibold select-none ml-1.5")
 const tasksInput = cva("w-full bg-gray-100 py-2 px-4 rounded-md placeholder:text-sm placeholder:opacity-50 outline-transparent outline-1 focus:bg-white focus:outline-[#a596e0]")
-
+const fulltaskContainer = cva("fulltaskContainer absolute right-0 lg:translate-x-0 top-0 lg:static w-full h-full flex flex-col xs:max-w-[450px] shadow-[-4px_0_6px_-1px_rgba(0,0,0,0.1)] lg:shadow-none duration-300 ease-in-out")
 
 
 export default function Tasks() {
   const {sidebarIsOpen, setSidebarIsOpen} = useSidebar();
+  const [fulltaskViewIsOpen, setFulltaskViewIsOpen] = useState(false);
   const Icon = sidebarIsOpen ? SidebarCloseIcon : SidebarOpenIcon;
   const [inputValue, setInputValue] = useState("");
   const {activeTaskId, setActiveTaskId} = useActiveTask();
@@ -36,6 +39,8 @@ export default function Tasks() {
   const activeGroup = useParams<{ group: string }>().group;
   const router = useRouter();
   const searchParams = useSearchParams();
+  const {theme} = useTheme();
+  const themeStyles = colorThemesStyles[theme as keyof typeof colorThemesStyles];
 
     useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
@@ -72,6 +77,23 @@ export default function Tasks() {
     setInputValue("");
   };
 
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        fulltaskViewIsOpen &&
+        e.target instanceof Element &&
+        !e.target.closest(".taskFullView")
+      ) {
+        setFulltaskViewIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [fulltaskViewIsOpen]);
+
+
+
+
   const customGroup = useQuery(
     api.groupsFunctions.getCustomGroup,
     activeGroup && !baseGroups[activeGroup as keyof typeof baseGroups] ? { groupId: activeGroup as Id<"taskGroups"> } : "skip"
@@ -93,13 +115,13 @@ export default function Tasks() {
           <input type="text" className={tasksInput()} placeholder="+ Добавить задачу" value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleAddTask()}/>
         </div>}
         
-        <TasksList activeGroup={activeGroup}/>
+        <TasksList activeGroup={activeGroup} setFulltaskViewIsOpen={setFulltaskViewIsOpen}/>
       </section>
 
       {/* <div className="ТУТ БУДЕТ БЛОК ДЛЯ РЕСАЙЗА"></div>*/}
 
-      <section className="w-full h-full flex flex-col max-w-[450px]">
-        {activeTaskId && <TaskFullView taskData={activeTask} subtasks={subtasks} />  }
+      <section className={fulltaskContainer({className: `${themeStyles.siteBackground} ${fulltaskViewIsOpen ? 'translate-x-0' : 'translate-x-full'}`})}>
+        {activeTaskId && <TaskFullView taskData={activeTask} subtasks={subtasks} setFulltaskViewIsOpen={setFulltaskViewIsOpen}/>  }
       </section>
 
     </div>

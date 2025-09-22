@@ -10,7 +10,7 @@ interface AsideUserContextMenuProps {
   setIsUserContextMenuOpen: (isOpen: boolean) => void
 }
 
-const asideUserContextMenu = cva("asideUserContextMenu absolute top-4 left-13 w-full max-w-42 h-auto bg-white z-10 p-1 rounded-md shadow-xl/20 text-sm")
+const asideUserContextMenu = cva("asideUserContextMenu absolute top-9 left-15 xs:top-4 xs:left-13 w-full max-w-42 h-auto bg-white z-100 p-1 rounded-md shadow-xl/20 text-sm")
 const asideUserContextMenuItem = cva("asideUserContextMenuItem flex items-center gap-2 py-1.5 px-3 hover:bg-gray-100 cursor-pointer rounded-sm duration-100 ease-in-out w-full")
 const iconContainer = cva("iconContainer aspect-square flex items-center justify-center max-h-4 h-full w-auto")
 const iconSvg = cva('iconSvg w-full h-full fill-icons text-icons')

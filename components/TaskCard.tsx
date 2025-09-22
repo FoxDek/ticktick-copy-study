@@ -44,10 +44,11 @@ interface TaskCardProps {
   hasMultipleTasks: boolean;
   handleTaskCheck: (taskId: Id<"tasks">, completed: boolean) => void;
   handleOpenContextMenu: (event: React.MouseEvent, taskId: Id<"tasks">) => void;
-  activeGroup: string
+  activeGroup: string;
+  setFulltaskViewIsOpen: (state: boolean) => void;
 }
 
-export default function TaskCard({ task, hasMultipleTasks, handleTaskCheck, handleOpenContextMenu, activeGroup }: TaskCardProps) {
+export default function TaskCard({ task, hasMultipleTasks, handleTaskCheck, handleOpenContextMenu, activeGroup, setFulltaskViewIsOpen }: TaskCardProps) {
   const { activeTaskId, setActiveTaskId } = useActiveTask();
   const isActive = task._id === activeTaskId;
   const groupData = useQuery(
@@ -55,8 +56,13 @@ export default function TaskCard({ task, hasMultipleTasks, handleTaskCheck, hand
     task.groupId ? { groupId: task.groupId } : "skip"
   );
 
+  const handleClickTask = () => {
+    setActiveTaskId(task._id);
+    setFulltaskViewIsOpen(true);
+  };
+
   return (
-    <li key={task._id} className={checkCard()} onClick={() => setActiveTaskId(task._id)}>
+    <li key={task._id} className={checkCard()} onClick={handleClickTask}>
       <div className={checkCardContent({ active: isActive, className: groupData?.color && `rounded-l-none relative after:content-[''] after:absolute after:-left-0.75 after:w-0.75 after:h-full after:bg-[var(--line-color)]` })} style={{ "--line-color": groupData?.color } as React.CSSProperties}>
         <span
           className={checkmarkContainer()}

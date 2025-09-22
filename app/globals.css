@@ -6,6 +6,10 @@
   --icons-color: #838383;
 }
 
+@theme {
+  --breakpoint-xs: 30rem;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

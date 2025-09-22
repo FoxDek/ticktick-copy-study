@@ -16,9 +16,15 @@ import { useParams } from "next/navigation";
 import DeleteGroupMenu from "./menu-components/DeleteGroupMenu";
 import { useTheme } from "./ThemeProvider";
 import colorThemesStyles from "@/app/constants/themes-styles";
+import { useSidebar } from "./SidebarProvider";
+import Image from "next/image";
+import Link from "next/link";
+import SearchIcon from "@/public/search-icon.svg";
+import SyncIcon from "@/public/sync-icon.svg";
+import NotifIcon from "@/public/notif-icon.svg";
 
 const projectsListMenu = cva(
-  "projectsListMenu w-[320px] p-3 select-none",
+  "projectsListMenu w-3/4 xs:w-[320px] p-3 select-none h-full md:h-auto absolute top-0 xs:left-[50px] md:left-0 z-20 md:static",
 );
 
 const groupContainer = cva("groupsContainer mb-4");
@@ -35,9 +41,13 @@ const groupList = cva("groupList flex flex-col");
 const groupHint = cva(
   "groupHint text-xs py-2 px-3 bg-icons/10 rounded-md",
 );
+const mobileAsideActionsiconContainer = cva("iconContainer flex items-center justify-center w-5 group");
+const mobileAsideActionsiconSvg = cva("iconSvg w-full h-full duration-100 ease-in-out");
 
-export default function ProjectsListMenu(sidebarIsOpen: {
+
+export default function ProjectsListMenu({ sidebarIsOpen, setIsUserContextMenuOpen }: {
   sidebarIsOpen: boolean;
+  setIsUserContextMenuOpen: (value: boolean) => void;
 }) {
   const params = useParams<{ group: string }>();
   const [activeGroup, setActiveGroup] = useState(params.group ?? "all");
@@ -46,6 +56,7 @@ export default function ProjectsListMenu(sidebarIsOpen: {
   const [openTaggedList, setOpenTaggedList] = useState(true);
   const [openCreateGroupMenu, setOpenCreateGroupMenu] = useState(false);
   const [openDeleteGroupWindow, setOpenDeleteGroupWindow] = useState(false);
+  const {setSidebarIsOpen} = useSidebar();
   const [contextMenu, setContextMenu] = useState<{
     isOpen: boolean;
     groupId: Id<"taskGroups"> | string | null;
@@ -60,6 +71,13 @@ export default function ProjectsListMenu(sidebarIsOpen: {
       setActiveGroup(params.group);
     }
   }, [params.group]);
+
+  useEffect(() => {
+    if (window.matchMedia('(max-width: 48rem)').matches) {
+      setSidebarIsOpen(false);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeGroup]);
 
   const userFilters = [];
   const userTags = [];
@@ -77,31 +95,23 @@ export default function ProjectsListMenu(sidebarIsOpen: {
     setContextMenu({ isOpen: true, groupId, position: { x: pageX, y: pageY } });
   };
 
-    const handleCloseContextMenu = () => {
-      setContextMenu({ isOpen: false, groupId: null, position: { x: 0, y: 0 } });
-    };
+  const handleCloseContextMenu = () => {
+    setContextMenu({ isOpen: false, groupId: null, position: { x: 0, y: 0 } });
+  };
   
-    useEffect(() => {
-      const handleClickOutside = (e: MouseEvent) => {
-        if (
-          contextMenu.isOpen &&
-          e.target instanceof Element &&
-          !e.target.closest(".contextMenu")
-        ) {
-          handleCloseContextMenu();
-        }
-      };
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [contextMenu.isOpen]);
-
-
-    
-
-
-
-
-  // const userActiveBasicGroups = ['all', 'today', 'inbox'];
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        contextMenu.isOpen &&
+        e.target instanceof Element &&
+        !e.target.closest(".contextMenu")
+      ) {
+        handleCloseContextMenu();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [contextMenu.isOpen]);
 
   const handleAddGroup = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -111,8 +121,30 @@ export default function ProjectsListMenu(sidebarIsOpen: {
   return (
     <section
       className={projectsListMenu({ className: `${themeStyles.projectsList}` })}
-      hidden={!sidebarIsOpen.sidebarIsOpen}
+      hidden={!sidebarIsOpen}
     >
+      <div className="mobileAsideActions flex items-center justify-between py-6 px-2 xs:hidden">
+        <div className={'relative aspect-square w-8 overflow-hidden rounded-md cursor-pointer border border-gray-300'} onClick={() => setIsUserContextMenuOpen(true)}>
+          <Image
+            src={"/default-user-photo.png"}
+            alt="User photo"
+            fill
+            className="object-cover"
+          />
+        </div>
+        <div className={'flex gap-4'}>
+          <Link href={"#"} className={mobileAsideActionsiconContainer()}>
+            <SyncIcon className={mobileAsideActionsiconSvg({className: `${themeStyles.icons}`})} />
+          </Link>
+          <Link href={"#"} className={mobileAsideActionsiconContainer()}>
+            <SearchIcon className={mobileAsideActionsiconSvg({className: `${themeStyles.icons}`})} />
+          </Link>
+          <Link href={"#"} className={mobileAsideActionsiconContainer()}>
+            <NotifIcon className={mobileAsideActionsiconSvg({className: `${themeStyles.icons}`})} />
+          </Link>
+        </div>
+      </div>
+      
       <BasicGroups activeGroup={activeGroup} setActiveGroup={setActiveGroup} handleOpenContextMenu={handleOpenContextMenu} />
 
       <figure className="w-full h-[1px] bg-gray-300 mb-4"></figure>

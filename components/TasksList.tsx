@@ -10,7 +10,12 @@ import Loader from "./Loader";
 import { useTaskActions } from "@/app/hoocs/useTaskActions";
 import EmptyTasksList from "./EmptyTasksList";
 
-export default function TasksList({ activeGroup }: { activeGroup: string }) {
+interface TasksListProps {
+  activeGroup: string;
+  setFulltaskViewIsOpen: (state: boolean) => void;
+}
+
+export default function TasksList({ activeGroup, setFulltaskViewIsOpen }: TasksListProps ) {
   const data = useQuery(api.tasksFunctions.getTasks, { groupId: activeGroup });
   const { handleTaskCheck } = useTaskActions();
 
@@ -60,6 +65,7 @@ export default function TasksList({ activeGroup }: { activeGroup: string }) {
                 handleTaskCheck={handleTaskCheck}
                 handleOpenContextMenu={handleOpenContextMenu}
                 activeGroup={activeGroup}
+                setFulltaskViewIsOpen={setFulltaskViewIsOpen}
               />
             ))
           ) : (

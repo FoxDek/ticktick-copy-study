@@ -21,6 +21,7 @@ import EditableTaskDescription from "./EditableTaskDescription";
 import TaskSubtasksList from "./TaskSubtasksList";
 import Loader from "./Loader";
 import FullTaskGroupMenu from './menu-components/FullTaskGroupMenu';
+import CrossIcon from '@/public/cross-icon.svg'
 
 type Priority = 'common' | 'low' | 'medium' | 'high';
 
@@ -43,6 +44,12 @@ interface Subtask {
   completed: boolean;
 }
 
+interface TaskFullViewProps {
+  taskData: Task | null | undefined;
+  subtasks: Subtask[] | null | undefined;
+  setFulltaskViewIsOpen: (state: boolean) => void;
+}
+
 const checkmarkContainer = cva("checkmarkContainer flex items-center justify-center h-4 group cursor-pointer mr-3");
 const checkmarkIcon = cva('checkmarkIcon w-full h-full duration-100 ease-in-out');
 const fullTaskTop = cva("fullTaskTop flex justify-between px-5 pt-5 pb-3 border-b border-gray-200");
@@ -54,8 +61,9 @@ const taskGroupToggler = cva("taskGroupToggler text-sm p-1 hover:bg-gray-100 cur
 const fullTaskBottomButtons = cva("fullTaskBottomButtons");
 const iconSvg = cva('iconSvg w-full h-full fill-icons');
 
+const crossIconContainer = cva("iconContainer mr-4 aspect-square flex items-center justify-center max-h-4 h-full w-auto group rounded-sm cursor-pointer md:hidden");
 
-export default function TaskFullView({ taskData, subtasks }: { taskData: Task | null | undefined, subtasks: Subtask[] | null | undefined }) {
+export default function TaskFullView({ taskData, subtasks, setFulltaskViewIsOpen }: TaskFullViewProps) {
   const [priorityContextMenuIsOpen, setPriorityContextMenuIsOpen] = useState(false);
   const [listDescToggler, setListDescToggler] = useState('desc');
   const {handleTaskCheck} = useTaskActions();
@@ -84,6 +92,11 @@ export default function TaskFullView({ taskData, subtasks }: { taskData: Task | 
       {taskData === null ? 'нет такой задачи' : taskData ? <div className={taskFullView()}>
         <div className={fullTaskTop()}>
           <div className="flex items-center">
+
+            <span className={crossIconContainer()} onClick={() => setFulltaskViewIsOpen(false)}>
+              <CrossIcon className='iconSvg w-full h-full fill-icons text-icons' />
+            </span>
+
             <span className={checkmarkContainer()} onClick={() => taskData && handleTaskCheck(taskData?._id, !taskData?.completed)}>
               {taskData.completed ? (
               <CheckmarkIcon
