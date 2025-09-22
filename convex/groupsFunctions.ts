@@ -33,7 +33,7 @@ export const createCustomGroup = mutation({
   args: {
     name: v.string(),
     color: v.string(),
-    icon: v.union(v.literal('all'), v.literal('today'), v.literal('inbox'), v.literal('plus'), v.literal('checkmarkNoBg'), v.literal('trash'), v.literal('newList')),
+    icon: v.union(v.literal('summary'), v.literal('all'), v.literal('today'), v.literal('inbox'), v.literal('plus'), v.literal('checkmarkNoBg'), v.literal('trash'), v.literal('newList'), v.literal('completed'), v.literal('tomorrow'), v.literal('next7days'), v.literal('assignedToMe'), v.literal('tags'), v.literal('filters'), v.literal('cancelled'), v.literal('deleted')),
   },
   handler: async (ctx, {name, color, icon}) => {
     const userId = await getAuthUserId(ctx);
@@ -59,7 +59,7 @@ export const updateCustomGroup = mutation({
     patch: v.object({
       name: v.optional(v.string()),
       color: v.optional(v.string()),
-      icon: v.optional(v.union(v.literal('all'), v.literal('today'), v.literal('inbox'), v.literal('plus'), v.literal('checkmarkNoBg'), v.literal('trash'), v.literal('newList'))),
+      icon: v.optional(v.union(v.literal('summary'), v.literal('all'), v.literal('today'), v.literal('inbox'), v.literal('plus'), v.literal('checkmarkNoBg'), v.literal('trash'), v.literal('newList'), v.literal('completed'), v.literal('tomorrow'), v.literal('next7days'), v.literal('assignedToMe'), v.literal('tags'), v.literal('filters'), v.literal('cancelled'), v.literal('deleted'))),
     }),
   },
   handler: async (ctx, {groupId, patch}) => {

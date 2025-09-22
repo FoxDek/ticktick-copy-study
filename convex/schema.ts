@@ -33,7 +33,7 @@ export default defineSchema({
     userId: v.id("users"),
     color: v.string(),
     // icon: v.union(...iconNames.map(n => v.literal(n))),
-    icon: v.union(v.literal('all'), v.literal('today'), v.literal('inbox'), v.literal('plus'), v.literal('checkmarkNoBg'), v.literal('trash'), v.literal('newList')),
+    icon: v.union(v.literal('summary'), v.literal('all'), v.literal('today'), v.literal('inbox'), v.literal('plus'), v.literal('checkmarkNoBg'), v.literal('trash'), v.literal('newList'), v.literal('completed'), v.literal('tomorrow'), v.literal('next7days'), v.literal('assignedToMe'), v.literal('tags'), v.literal('filters'), v.literal('cancelled'), v.literal('deleted')),
   }),
 
   tasks: defineTable({
@@ -44,7 +44,7 @@ export default defineSchema({
     groupId: v.optional(v.union(v.id("taskGroups"), v.null())),
     description: v.optional(v.string()),
     subtasksCount: v.number(),
-    priority: v.union(v.literal('common'), v.literal('low'), v.literal('medium'), v.literal('high')),
+    priority: v.union(v.literal('summary'), v.literal('all'), v.literal('today'), v.literal('inbox'), v.literal('plus'), v.literal('checkmarkNoBg'), v.literal('trash'), v.literal('newList'), v.literal('completed'), v.literal('tomorrow'), v.literal('next7days'), v.literal('assignedToMe'), v.literal('tags'), v.literal('filters'), v.literal('cancelled'), v.literal('deleted')),
   })
     .index('by_completed', ['completed'])
     .index('by_groupId', ['groupId']),
