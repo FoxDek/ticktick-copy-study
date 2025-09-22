@@ -44,7 +44,7 @@ export default defineSchema({
     groupId: v.optional(v.union(v.id("taskGroups"), v.null())),
     description: v.optional(v.string()),
     subtasksCount: v.number(),
-    priority: v.union(v.literal('summary'), v.literal('all'), v.literal('today'), v.literal('inbox'), v.literal('plus'), v.literal('checkmarkNoBg'), v.literal('trash'), v.literal('newList'), v.literal('completed'), v.literal('tomorrow'), v.literal('next7days'), v.literal('assignedToMe'), v.literal('tags'), v.literal('filters'), v.literal('cancelled'), v.literal('deleted')),
+    priority: v.union(v.literal('common'), v.literal('low'), v.literal('medium'), v.literal('high')),
   })
     .index('by_completed', ['completed'])
     .index('by_groupId', ['groupId']),
