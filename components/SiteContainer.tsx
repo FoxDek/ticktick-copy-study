@@ -47,7 +47,7 @@ export default function SiteContainer({ children }: { children: React.ReactNode 
   }, [isUserContextMenuOpen]);
 
   return (
-    <section className="siteContainer min-h-screen flex relative overflow-hidden">
+    <section className="siteContainer min-h-[100dvh] flex relative overflow-hidden">
       
       <Authenticated>
         <AsideMenu isUserContextMenuOpen={isUserContextMenuOpen} setIsUserContextMenuOpen={setIsUserContextMenuOpen}/>
